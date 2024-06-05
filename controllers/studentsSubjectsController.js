@@ -36,14 +36,7 @@ const studentsSubjectsController = {
     getSubjectsByStudent: async (req, res) => {
         try {
             const studentID = req.params.id
-            console.log(studentID);
             const subjects = await StudentsSubjectsModel.find({user_id: studentID})
-
-            if(!subjects) {
-                res.status(404).json({ msg: "Este aluno não está cadastrado em nenhuma disciplina"})
-                return;
-            }
-
             res.json(subjects)
         } catch (error) {
             console.log(error);
