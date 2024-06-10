@@ -1,4 +1,6 @@
-const { User: UserModel } = require("../models/User");
+const { User: UserModel, User } = require("../models/User");
+const bcrypt = require("bcryptjs")
+const checkToken = require("../middleware/checkToken")
 
 const userController = {
 
@@ -8,12 +10,12 @@ const userController = {
                 registration: req.body.registration,
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password,
+                password: await hashPassword(req.body.password),
                 role: req.body.role
             };
 
             const response = await UserModel.create(user);
-            res.status(201).json({response, msg: "Serviço criado com sucesso!"});
+            res.status(201).json({response, msg: "Usuário registrado com sucesso!"});
         } catch (error) {
             console.log(error);
         }
@@ -26,9 +28,10 @@ const userController = {
             console.log(error);
         }
     },
+    //utilizar token de autenticacao
     get: async(req, res) => {
         try {
-            
+            console.log('passou aqui')
             const id = req.params.id
             const user = await UserModel.findById(id)
 
@@ -81,10 +84,39 @@ const userController = {
         }
 
         res.status(200).json({user, msg: "Usuário atualizado com sucesso"})
+    },
 
+    login: async (req, res) => {
+        const {email, password} = req.body
+        try {
+            const userExists = await UserModel.findOne({email});
+            console.log("usuario", userExists)
+            if (!userExists) {
+                return res.status(404).json({msg: "Usuário não encontrado"});
+            }
+
+            const isPasswordValid = await bcrypt.compare(password, userExists.password);
+            if (!isPasswordValid) {
+                return res.status(401).json({ msg: "Senha inválida."})
+            }
+
+            res.status(200).json({ msg: "Login bem-sucedido"})
+        } catch (error) {
+            res.status(500)
+        }
     }
 
 }
+//create hashPassword
+async function hashPassword(password) {
+    
+    const salt = await bcrypt.genSalt(12)
+    const passwordHashed = await bcrypt.hash(password, salt)
+    return passwordHashed
+}
+
+//Login user
+
 
 module.exports = userController;
 
