@@ -1,6 +1,8 @@
 const { User: UserModel, User } = require("../models/User");
-const bcrypt = require("bcryptjs")
-const checkToken = require("../middleware/checkToken")
+const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv').config();
+const checkToken = require("../middleware/checkToken");
 
 const userController = {
 
@@ -100,7 +102,9 @@ const userController = {
                 return res.status(401).json({ msg: "Senha inválida."})
             }
 
-            res.status(200).json({ msg: "Login bem-sucedido"})
+            //JWT
+            const token = jwt.sign({ userExists }, process.env.SECRET, { expiresIn: 300 });
+            res.status(200).json({ msg: "Login bem-sucedido", auth:true, token})
         } catch (error) {
             res.status(500)
         }
