@@ -33,15 +33,14 @@ const userController = {
     //utilizar token de autenticacao
     get: async(req, res) => {
         try {
-            console.log('passou aqui')
             const id = req.params.id
             const user = await UserModel.findById(id)
-
+            
             if(!user) {
                 res.status(404).json({ msg: "Usuário não encontrado."})
                 return;
             }
-
+            
             res.json(user)
         } catch (error) {
             console.log(error);
@@ -103,9 +102,9 @@ const userController = {
             }
 
             //JWT
-            const token = jwt.sign({ userExists }, process.env.SECRET, { expiresIn: 300 });
-            let user_id = userExists._id
-            res.json({ msg: "Login bem-sucedido", auth:true, token, user_id})
+            const payload = {user_id: userExists._id}
+            const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 300 });
+            res.json({ msg: "Login bem-sucedido", auth:true, token})
         } catch (error) {
             res.status(500)
         }
