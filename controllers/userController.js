@@ -104,7 +104,8 @@ const userController = {
 
             //JWT
             const token = jwt.sign({ userExists }, process.env.SECRET, { expiresIn: 300 });
-            res.status(200).json({ msg: "Login bem-sucedido", auth:true, token})
+            let user_id = userExists._id
+            res.json({ msg: "Login bem-sucedido", auth:true, token, user_id})
         } catch (error) {
             res.status(500)
         }
@@ -118,9 +119,5 @@ async function hashPassword(password) {
     const passwordHashed = await bcrypt.hash(password, salt)
     return passwordHashed
 }
-
-//Login user
-
-
 module.exports = userController;
 
