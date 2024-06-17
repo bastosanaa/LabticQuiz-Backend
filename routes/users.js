@@ -1,19 +1,18 @@
 const router = require("express").Router()
-// const checkToken = require("../middleware/checkToken")
 
 const userController = require("../controllers/userController")
 
-router.route("/users").post((req, res) => userController.create(req, res));
+router.route("/").post((req, res) => userController.create(req, res));
 
-router.route("/users").get((req, res) => userController.getAll(req, res));
+router.route("/").get((req, res) => userController.getAll(req, res));
 
-router.route("/users/:id").get((req, res) => userController.get(req, res));
+router.route("/:id").get((req, res) => userController.get(req, res));
 
-router.route("/users/:id").delete((req, res) => userController.delete(req, res));
+router.route("/:id").delete((req, res) => userController.delete(req, res));
 
-router.route("/users/:id").put((req, res) => userController.update(req, res));
+router.route("/:id").put((req, res) => userController.update(req, res));
 
-router.route("/users/auth").post((req, res) => userController.login(req, res))
+router.route("/authorization").post((req, res) => userController.tokenToUserID(req, res))
 
 module.exports = router;
 

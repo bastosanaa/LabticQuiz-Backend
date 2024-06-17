@@ -90,8 +90,8 @@ const userController = {
     login: async (req, res) => {
         const {email, password} = req.body
         try {
+            console.log('tentou login')
             const userExists = await UserModel.findOne({email});
-            console.log("usuario", userExists)
             if (!userExists) {
                 return res.status(404).json({msg: "Usuário não encontrado"});
             }
@@ -108,6 +108,17 @@ const userController = {
         } catch (error) {
             res.status(500)
         }
+    },
+
+    tokenToUserID: async (req, res) => {
+        try {
+            const user_id = req.user
+            console.log("USERID",user_id)
+            res.status(200).json({user : user_id})
+        } catch (error) {
+            res.status(500)
+        }
+
     }
 
 }
