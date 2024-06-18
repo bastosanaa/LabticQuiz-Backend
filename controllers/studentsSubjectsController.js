@@ -37,6 +37,7 @@ const studentsSubjectsController = {
         try {
             const studentID = req.params.id
             const subjects = await StudentsSubjectsModel.find({user_id: studentID})
+            console.log("oiiiiiii", subjects);
             res.json(subjects)
         } catch (error) {
             console.log(error);

@@ -90,7 +90,7 @@ const userController = {
     login: async (req, res) => {
         const {email, password} = req.body
         try {
-            console.log('tentou login')
+            console.log('usuario tentou login')
             const userExists = await UserModel.findOne({email});
             if (!userExists) {
                 return res.status(404).json({msg: "Usuário não encontrado"});
@@ -100,9 +100,10 @@ const userController = {
             if (!isPasswordValid) {
                 return res.status(401).json({ msg: "Senha inválida."})
             }
-
+            console.log('usuario pode logar')
             //JWT
             const payload = {user_id: userExists._id}
+            console.log("payload", payload);
             const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 300 });
             res.json({ msg: "Login bem-sucedido", auth:true, token})
         } catch (error) {
