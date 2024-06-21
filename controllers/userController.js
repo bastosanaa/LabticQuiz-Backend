@@ -33,7 +33,7 @@ const userController = {
     //utilizar token de autenticacao
     get: async(req, res) => {
         try {
-            const id = req.params.id
+            const id = req.user
             const user = await UserModel.findById(id)
             
             if(!user) {
@@ -49,7 +49,7 @@ const userController = {
     delete: async(req, res) => {
         try {
             
-            const id = req.params.id
+            const id = req.user
 
             const user = await UserModel.findById(id)
 
@@ -75,7 +75,7 @@ const userController = {
             role: req.body.role
         };
         
-        const id = req.params.id
+        const id = req.user
 
         const updatedUser = await UserModel.findByIdAndUpdate(id, user);
 
@@ -90,7 +90,6 @@ const userController = {
     login: async (req, res) => {
         const {email, password} = req.body
         try {
-            console.log('usuario tentou login')
             const userExists = await UserModel.findOne({email});
             if (!userExists) {
                 return res.status(404).json({msg: "Usuário não encontrado"});
@@ -100,10 +99,8 @@ const userController = {
             if (!isPasswordValid) {
                 return res.status(401).json({ msg: "Senha inválida."})
             }
-            console.log('usuario pode logar')
             //JWT
             const payload = {user_id: userExists._id}
-            console.log("payload", payload);
             const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 300 });
             res.json({ msg: "Login bem-sucedido", auth:true, token})
         } catch (error) {
@@ -114,7 +111,6 @@ const userController = {
     tokenToUserID: async (req, res) => {
         try {
             const user_id = req.user
-            console.log("USERID",user_id)
             res.status(200).json({user : user_id})
         } catch (error) {
             res.status(500)

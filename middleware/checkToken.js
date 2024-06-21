@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 
 function checkToken(req, res, next) {
     const token = req.header('Authorization');
-    console.log("middleware", token);
     if (!token) {
         return res.status(401).json({ msg: "Acesso negado."})
     }
@@ -11,6 +10,7 @@ function checkToken(req, res, next) {
     try {
         const verified = jwt.verify(token, process.env.SECRET)
         req.user = verified.user_id;
+        console.log(req.user);
         next();
     } catch (error) {
         console.log(error);
