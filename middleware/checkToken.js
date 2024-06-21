@@ -10,7 +10,7 @@ function checkToken(req, res, next) {
     try {
         const verified = jwt.verify(token, process.env.SECRET)
         req.user = verified.user_id;
-        console.log(req.user);
+        req.role = verified.user_role
         next();
     } catch (error) {
         console.log(error);

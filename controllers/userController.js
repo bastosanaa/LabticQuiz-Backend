@@ -91,6 +91,7 @@ const userController = {
         const {email, password} = req.body
         try {
             const userExists = await UserModel.findOne({email});
+            console.log(userExists);
             if (!userExists) {
                 return res.status(404).json({msg: "Usuário não encontrado"});
             }
@@ -100,18 +101,19 @@ const userController = {
                 return res.status(401).json({ msg: "Senha inválida."})
             }
             //JWT
-            const payload = {user_id: userExists._id}
-            const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 300 });
+            const payload = {user_id: userExists._id, user_role: userExists.role}
+            const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 30000 });
             res.json({ msg: "Login bem-sucedido", auth:true, token})
         } catch (error) {
             res.status(500)
         }
     },
 
-    tokenToUserID: async (req, res) => {
+    tokenToUserRole: async (req, res) => {
         try {
-            const user_id = req.user
-            res.status(200).json({user : user_id})
+            const user_role = req.role
+            console.log("tokenToUserRole", user_role);
+            res.status(200).json({user_role : user_role})
         } catch (error) {
             res.status(500)
         }

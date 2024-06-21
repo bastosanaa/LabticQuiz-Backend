@@ -12,7 +12,7 @@ router.route("/").delete((req, res) => userController.delete(req, res));
 
 router.route("/").put((req, res) => userController.update(req, res));
 
-router.route("/authorization").post((req, res) => userController.tokenToUserID(req, res))
+router.route("/role").post((req, res) => userController.tokenToUserRole(req, res))
 
 module.exports = router;
 
