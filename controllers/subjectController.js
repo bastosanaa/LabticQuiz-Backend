@@ -7,9 +7,7 @@ const subjectController = {
             const subject = {
                 registration: req.body.registration,
                 name: req.body.name,
-                email: req.body.email,
-                password: req.body.password,
-                role: req.body.role
+                teacher_id : req.body.teacher_id
             };
 
             const response = await SubjectModel.create(subject);
@@ -20,7 +18,7 @@ const subjectController = {
     },
     getAll: async(req, res) => {
         try {
-            const subjects = await SubjectModel.find();
+            const subjects = await SubjectModel.find().populate('teacher_id', "name");
             res.json(subjects);
         } catch (error) {
             console.log(error);

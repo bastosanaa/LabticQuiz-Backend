@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose")
 
 const { Schema } = mongoose
@@ -9,13 +10,21 @@ const subjectSchema = new Schema({
         required: true
     },
     teacher_id: {
-        type:String,
-        // required: true
+        type:ObjectId,
+        ref: "users",
+        required: true
     },
     //quiz = nova entidade
-    quizzes: {
-        type: String
-    },
+    quizzes: [{
+        quiz_id: {
+            type: ObjectId,
+            ref: "Quiz"
+        },
+        description: {
+            type: String
+        }
+
+    }],
 },
 {timestamps: true}
 );
