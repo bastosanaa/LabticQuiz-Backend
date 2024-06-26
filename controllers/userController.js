@@ -22,9 +22,9 @@ const userController = {
             console.log(error);
         }
     },
-    getAll: async(req, res) => {
+    getAllTeachers: async(req, res) => {
         try {
-            const users = await UserModel.find();
+            const users = await UserModel.find({ role: 'professor'}, "name");
             res.json(users);
         } catch (error) {
             console.log(error);
