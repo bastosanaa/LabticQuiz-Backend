@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 const subjectController = require("../controllers/subjectController")
 
-router.route("/").post((req, res) => subjectController.create(req, res));
+router.route("/register").post((req, res) => subjectController.create(req, res));
 
 router.route("/painel").get((req, res) => subjectController.getAll(req, res));
 

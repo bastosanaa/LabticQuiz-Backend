@@ -4,10 +4,22 @@ const subjectController = {
 
     create: async(req, res) => {
         try {
+            const user_role = req.role
+            console.log("ROLE DO USUARIO", user_role);
+            if (user_role !== "administrador") {
+                res.status(401).json({msg : "Acesso negado"})
+            }
+
+            const subjectName = req.body.name
+            const subjectEqual = await SubjectModel.findOne({'name' : subjectName})
+            if (subjectEqual) {
+                res.status(409).json({msg : "Disciplina já existe"})
+            }
+
             const subject = {
-                registration: req.body.registration,
                 name: req.body.name,
-                teacher_id : req.body.teacher_id
+                teacher_id : req.body.teacher_id,
+                quizzes: []
             };
 
             const response = await SubjectModel.create(subject);

@@ -12,16 +12,19 @@ const subjectSchema = new Schema({
     teacher_id: {
         type:ObjectId,
         ref: "users",
-        required: true
+        default: null
     },
     //quiz = nova entidade
     quizzes: [{
         quiz_id: {
             type: ObjectId,
-            ref: "Quiz"
+            ref: "Quiz",
+            default: null
+
         },
         description: {
-            type: String
+            type: String,
+            default: null
         }
 
     }],
