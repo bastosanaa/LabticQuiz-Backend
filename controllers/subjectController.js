@@ -40,6 +40,7 @@ const subjectController = {
         try {
             
             const id = req.params.id
+            
             const subject = await SubjectModel.findById(id)
 
             if(!subject) {
@@ -54,8 +55,11 @@ const subjectController = {
     },
     delete: async(req, res) => {
         try {
-            
-            const id = req.params.id
+            const user_role = req.role
+            if (user_role !== "administrador") {
+                res.status(401).json({msg : "Acesso negado"})
+            }
+            const id = req.body.id
 
             const subject = await SubjectModel.findById(id)
 
