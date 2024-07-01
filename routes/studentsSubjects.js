@@ -8,8 +8,8 @@ router.route("/").post((req, res) => studentsSubjectsController.create(req, res)
 
 router.route("/").get((req, res) => studentsSubjectsController.getSubjectsByStudent(req, res));
 
-router.route("/:id").delete((req, res) => studentsSubjectsController.delete(req, res));
+router.route("/").delete((req, res) => studentsSubjectsController.delete(req, res));
 
-router.route("/:id").put((req, res) => studentsSubjectsController.update(req, res));
+router.route("/").put((req, res) => studentsSubjectsController.update(req, res));
 
 module.exports = router;

@@ -4,6 +4,11 @@ const studentsSubjectsController = {
 
     create: async(req,res) => {
         try {
+            const user_role = req.role
+            if (user_role !== "administrador") {
+                res.status(401).json({msg : "Acesso negado"})
+            }
+            //VERIFICAR SE A DISCIPLINA E O USUARIO EXISTEM
             const studentsSubjects = {
                 user_id: req.body.user_id,
                 subject_id: req.body.subject_id,
@@ -43,20 +48,26 @@ const studentsSubjectsController = {
         }
     },
     delete: async(req, res) => {
+        console.log("chegou no back")
         try {
-            
-            const id = req.params.id
+            const user_role = req.role
+            if (user_role !== "administrador") {
+                res.status(401).json({msg : "Acesso negado"})
+            }
 
-            const studentsSubjects = await StudentsSubjectsModel.findById(id)
+            const id = req.body.id
+            console.log(id)
+
+            const studentsSubjects = await StudentsSubjectsModel.deleteMany({subject_id: id})
 
             if(!studentsSubjects) {
                 res.status(404).json({ msg: "Matricula não encontrada nessa disciplina"})
                 return;
             }
 
-            const deletedstudentsSubjects = await SubjectModel.findByIdAndDelete(id)
+            // const deletedstudentsSubjects = await SubjectModel.findByIdAndDelete(id)
             
-            res.status(200).json({ deletedstudentsSubjects, msg: "Disciplina excluída com sucesso"})
+            res.status(200).json({ studentsSubjects, msg: "Disciplina excluída com sucesso"})
 
         } catch (error) {
             console.log(error)
