@@ -47,7 +47,7 @@ const subjectController = {
                 res.status(404).json({ msg: "Disciplina não encontrada."})
                 return;
             }
-
+            console.log(subject);
             res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
         } catch (error) {
             console.log(error);
@@ -78,13 +78,12 @@ const subjectController = {
     },
     update: async (req, res) => {
         const subject = {
-            registration: req.body.registration,
             name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            role: req.body.role
+            teacher_id: req.body.teacher_id
         };
-        
+        if (subject.teacher_id == '') {
+            subject.teacher_id = null
+        }
         const id = req.params.id
 
         const updatedSubject = await SubjectModel.findByIdAndUpdate(id, subject);

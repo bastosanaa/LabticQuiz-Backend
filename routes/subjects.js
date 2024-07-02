@@ -10,6 +10,6 @@ router.route("/:id").get((req, res) => subjectController.get(req, res));
 
 router.route("/").delete((req, res) => subjectController.delete(req, res));
 
-router.route("/").put((req, res) => subjectController.update(req, res));
+router.route("/:id").patch((req, res) => subjectController.update(req, res));
 
 module.exports = router;
