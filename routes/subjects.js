@@ -6,7 +6,7 @@ router.route("/register").post((req, res) => subjectController.create(req, res))
 
 router.route("/painel").get((req, res) => subjectController.getAll(req, res));
 
-router.route("/").get((req, res) => subjectController.get(req, res));
+router.route("/:id").get((req, res) => subjectController.get(req, res));
 
 router.route("/").delete((req, res) => subjectController.delete(req, res));
 

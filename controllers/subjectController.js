@@ -48,7 +48,7 @@ const subjectController = {
                 return;
             }
 
-            res.json(subject)
+            res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
         } catch (error) {
             console.log(error);
         }
