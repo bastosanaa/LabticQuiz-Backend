@@ -2,25 +2,28 @@ const { User: UserModel, User } = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
-const checkToken = require("../middleware/checkToken");
+const AppError = require("../appError.js")
+
 
 const userController = {
 
     create: async(req, res) => {
-        try {
-            const user = {
-                registration: req.body.registration,
-                name: req.body.name,
-                email: req.body.email,
-                password: await hashPassword(req.body.password),
-                role: req.body.role
-            };
-
-            const response = await UserModel.create(user);
-            res.status(201).json({response, msg: "Usuário registrado com sucesso!"});
-        } catch (error) {
-            console.log(error);
+        const user_role = req.role
+        if (user_role !== "administrador") {
+            throw new AppError("Acesso negadoooo", 401)
+            // res.status(401).json({msg : "Acesso negado"})
         }
+        const user = {
+            registration: req.body.registration,
+            name: req.body.name,
+            email: req.body.email,
+            password: await hashPassword(req.body.password),
+            role: req.body.role
+        };
+
+        const response = await UserModel.create(user);
+        res.status(201).json({response, msg: "Usuário registrado com sucesso!"});
+    
     },
     getAllTeachers: async(req, res) => {
         try {

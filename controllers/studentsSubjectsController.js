@@ -16,9 +16,9 @@ const studentsSubjectsController = {
             };
 
             const response = await StudentsSubjectsModel.create(studentsSubjects);
-            res.status(201).json({response, msg: "Aluno matriculado na disciplina!"})
+            return res.status(201).json({response, msg: "Aluno matriculado na disciplina!", success : true})
         } catch (error) {
-            console.log(error);
+            return next(error)
         }
     },
     // getStudentsBySubject: async (req, res) => {

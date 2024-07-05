@@ -2,6 +2,7 @@
 const express = require('express')
 const cors = require('cors')
 const app = express();
+const errorHandler = require("./middleware/errorHandler.js")
 
 
 
@@ -17,6 +18,12 @@ const routes = require("./routes/router")
 
 app.use('/api', routes);
 
+app.use((error, req, res, next) => {
+    console.log('Erro capturado no middleware global:', err.message);
+    next(error);
+});
+app.use(errorHandler)
+
 app.listen(3333, () => {
     console.log("Servidor Inicializado")
 })
@@ -24,4 +31,6 @@ app.listen(3333, () => {
 app.get("/" , (req, res) => {
     res.send("servidor inicializado")
 })
+
+
 

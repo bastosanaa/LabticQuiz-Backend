@@ -1,8 +1,9 @@
 const router = require("express").Router()
+const tryCatch = require("../utils/tryCatch.js")
 
 const userController = require("../controllers/userController")
 
-router.route("/").post((req, res) => userController.create(req, res));
+router.route("/").post((req, res) => tryCatch(userController.create(req, res)));
 
 router.route("/teachers").get((req, res) => userController.getAllTeachers(req, res));
 
