@@ -1,25 +1,31 @@
 const { studentsSubjects: StudentsSubjectsModel } = require("../models/StudentsSubjects")
+const AppError = require("../appError.js")
+const Errors = require("../constants/errorCodes.js")
 
 const studentsSubjectsController = {
 
     create: async(req,res) => {
-        try {
-            const user_role = req.role
-            if (user_role !== "administrador") {
-                res.status(401).json({msg : "Acesso negado"})
-            }
-            //VERIFICAR SE A DISCIPLINA E O USUARIO EXISTEM
-            const studentsSubjects = {
-                user_id: req.body.user_id,
-                subject_id: req.body.subject_id,
-                subject_name: req.body.subject_name
-            };
 
-            const response = await StudentsSubjectsModel.create(studentsSubjects);
-            return res.status(201).json({response, msg: "Aluno matriculado na disciplina!", success : true})
-        } catch (error) {
-            return next(error)
+        const user_role = req.role
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
         }
+        if (user_role !== "administrador") {
+
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
+        }
+        //VERIFICAR SE A DISCIPLINA E O USUARIO EXISTEM
+        const studentsSubjects = {
+            user_id: req.body.user_id,
+            subject_id: req.body.subject_id,
+            subject_name: req.body.subject_name
+        };
+
+        const response = await StudentsSubjectsModel.create(studentsSubjects);
+        return res.status(201).json({response, msg: "Aluno matriculado na disciplina!", success : true})
+
     },
     // getStudentsBySubject: async (req, res) => {
     //     try {
@@ -39,41 +45,49 @@ const studentsSubjectsController = {
     //     }
     // },
     getSubjectsByStudent: async (req, res) => {
-        try {
             const studentID = req.user
             const subjects = await StudentsSubjectsModel.find({user_id: studentID})
+            if(!subjects) {
+                const {statusCode, errorCode, message} = Errors.RELATION_ERROR.DOESNT_EXIST
+                throw new AppError(statusCode, errorCode, message)
+            }
             res.json(subjects)
-        } catch (error) {
-            console.log(error);
-        }
     },
     delete: async(req, res) => {
-        console.log("chegou no back")
-        try {
-            const user_role = req.role
-            if (user_role !== "administrador") {
-                res.status(401).json({msg : "Acesso negado"})
-            }
-
-            const id = req.body.id
-            console.log(id)
-
-            const studentsSubjects = await StudentsSubjectsModel.deleteMany({subject_id: id})
-
-            if(!studentsSubjects) {
-                res.status(404).json({ msg: "Matricula não encontrada nessa disciplina"})
-                return;
-            }
-
-            // const deletedstudentsSubjects = await SubjectModel.findByIdAndDelete(id)
-            
-            res.status(200).json({ studentsSubjects, msg: "Disciplina excluída com sucesso"})
-
-        } catch (error) {
-            console.log(error)
+        const user_role = req.role
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
         }
+        if (user_role !== "administrador") {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const id = req.body.id
+        console.log(id)
+
+        const studentsSubjects = await StudentsSubjectsModel.deleteMany({subject_id: id})
+
+        if(!studentsSubjects) {
+            const {statusCode, errorCode, message} = Errors.RELATION_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+        
+        res.status(200).json({ studentsSubjects, msg: "Disciplina excluída com sucesso"})
+
     },
     update: async (req, res) => {
+
+        const user_role = req.role
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
+        }
+        if (user_role !== "administrador") {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
+        }
         const studentsSubjects = {
             user_id: req.body.user_id,
             subject_id: req.body.subject_id,
@@ -85,8 +99,8 @@ const studentsSubjectsController = {
         const updatedstudentsSubjects = await SubjectModel.findByIdAndUpdate(id, subject);
 
         if(!updatedstudentsSubjects) {
-            res.status(404).json({ msg: "Usuário não encontrado."})
-            return;
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
         }
 
         res.status(200).json({studentsSubjects, msg: "Usuário atualizado com sucesso"})

@@ -89,6 +89,11 @@ const RELATION_ERROR = {
         errorCode: 3400,
         message: 'Relação já existe!',
     },
+    DOESNT_EXIST: { 
+        statusCode: 404,
+        errorCode: 3404,
+        message: "Relação não existe!"        
+    },
 };
 
 module.exports = {
