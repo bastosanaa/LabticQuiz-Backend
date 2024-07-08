@@ -1,82 +1,101 @@
 const { Subject: SubjectModel} = require("../models/Subject")
+const AppError = require("../appError.js")
+const Errors = require("../constants/errorCodes.js")
+
 
 const subjectController = {
 
     create: async(req, res) => {
-        try {
-            const user_role = req.role
-            console.log("ROLE DO USUARIO", user_role);
-            if (user_role !== "administrador") {
-                res.status(401).json({msg : "Acesso negado"})
-            }
 
-            const subjectName = req.body.name
-            const subjectEqual = await SubjectModel.findOne({'name' : subjectName})
-            if (subjectEqual) {
-                res.status(409).json({msg : "Disciplina já existe"})
-            }
+        const user_role = req.role
+        console.log("ROLE DO USUARIO", user_role);
 
-            const subject = {
-                name: req.body.name,
-                teacher_id : req.body.teacher_id,
-                quizzes: []
-            };
-
-            const response = await SubjectModel.create(subject);
-            res.status(201).json({response, msg: "Disciplina criada com sucesso!"});
-        } catch (error) {
-            console.log(error);
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
         }
+        if (user_role !== "administrador") {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const subjectName = req.body.name
+        const subjectEqual = await SubjectModel.findOne({'name' : subjectName})
+        if (subjectEqual) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.ALREADY_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const subject = {
+            name: req.body.name,
+            teacher_id : req.body.teacher_id,
+            quizzes: []
+        };
+
+        const response = await SubjectModel.create(subject);
+        res.status(201).json({response, msg: "Disciplina criada com sucesso!"});
     },
     getAll: async(req, res) => {
-        try {
-            const subjects = await SubjectModel.find().populate('teacher_id', "name");
-            res.json(subjects);
-        } catch (error) {
-            console.log(error);
+
+        const subjects = await SubjectModel.find().populate('teacher_id', "name");
+        if (!subjects) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
         }
+        res.json(subjects);
+
     },
     get: async(req, res) => {
-        try {
-            
-            const id = req.params.id
-            
-            const subject = await SubjectModel.findById(id)
 
-            if(!subject) {
-                res.status(404).json({ msg: "Disciplina não encontrada."})
-                return;
-            }
-            console.log(subject);
-            res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
-        } catch (error) {
-            console.log(error);
+        const id = req.params.id
+        
+        const subject = await SubjectModel.findById(id)
+
+        if(!subject) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
         }
+        console.log(subject);
+        res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
+
+
     },
     delete: async(req, res) => {
-        try {
-            const user_role = req.role
-            if (user_role !== "administrador") {
-                res.status(401).json({msg : "Acesso negado"})
-            }
-            const id = req.body.id
 
-            const subject = await SubjectModel.findById(id)
-
-            if(!subject) {
-                res.status(404).json({ msg: "Disciplina não encontrada."})
-                return;
-            }
-
-            const deletedSubject = await SubjectModel.findByIdAndDelete(id)
-            
-            res.status(200).json({ deletedSubject, msg: "Disciplina excluída com sucesso"})
-
-        } catch (error) {
-            console.log(error)
+        const user_role = req.role
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
         }
+        if (user_role !== "administrador") {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
+        }
+        const id = req.body.id
+
+        const subject = await SubjectModel.findById(id)
+
+        if(!subject) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const deletedSubject = await SubjectModel.findByIdAndDelete(id)
+        
+        res.status(200).json({ deletedSubject, msg: "Disciplina excluída com sucesso"})
+
     },
     update: async (req, res) => {
+
+        const user_role = req.role
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
+        }
+        if (user_role !== "administrador") {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
+        }
         const subject = {
             name: req.body.name,
             teacher_id: req.body.teacher_id
@@ -89,8 +108,8 @@ const subjectController = {
         const updatedSubject = await SubjectModel.findByIdAndUpdate(id, subject);
 
         if(!updatedSubject) {
-            res.status(404).json({ msg: "Usuário não encontrado."})
-            return;
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
         }
 
         res.status(200).json({subject, msg: "Usuário atualizado com sucesso"})

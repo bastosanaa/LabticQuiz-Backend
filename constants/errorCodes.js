@@ -50,7 +50,7 @@ const USER_ERROR = {
     }
 }
 
-const DISCIPLINA_ERROR = {
+const SUBJECT_ERROR = {
     ALREADY_EXIST: {
         statusCode: 409,
         errorCode: 2409,
@@ -93,7 +93,7 @@ const RELATION_ERROR = {
 
 module.exports = {
     RELATION_ERROR,
-    DISCIPLINA_ERROR,
+    SUBJECT_ERROR,
     USER_ERROR,
     TOKEN_ERROR
 }
