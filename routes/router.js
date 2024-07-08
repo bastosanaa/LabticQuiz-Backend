@@ -23,4 +23,4 @@ router.use("/studentsSubjects",checkToken, studentsSubjectsRouter)
 module.exports = router;
 
 //login
-router.route("/auth/users").post((req, res) => userController.login(req, res))
+router.route("/auth/users").post((req, res,next) => tryCatch(req, res,next,userController.login))

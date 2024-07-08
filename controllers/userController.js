@@ -60,7 +60,6 @@ const userController = {
 
     },
     delete: async(req, res) => {
-        try {
             
             const id = req.user
 
@@ -75,9 +74,6 @@ const userController = {
             
             res.status(200).json({ deletedUser, msg: "Usuário excluído com sucesso"})
 
-        } catch (error) {
-            console.log(error)
-        }
     },
     update: async (req, res) => {
         const user = {

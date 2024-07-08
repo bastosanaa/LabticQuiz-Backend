@@ -1,15 +1,16 @@
 const router = require("express").Router();
+const tryCatch = require("../utils/tryCatch.js")
 
 const studentsSubjectsController = require("../controllers/studentsSubjectsController")
 
-router.route("/").post((req, res) => studentsSubjectsController.create(req, res));
+router.route("/").post((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.create));
 
 // router.route("/studentsSubjects/:id").get((req, res) => studentsSubjectsController.getStudentsBySubject(req, res));
 
-router.route("/").get((req, res) => studentsSubjectsController.getSubjectsByStudent(req, res));
+router.route("/").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.getSubjectsByStudent));
 
-router.route("/").delete((req, res) => studentsSubjectsController.delete(req, res));
+router.route("/").delete((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.delete));
 
-router.route("/").put((req, res) => studentsSubjectsController.update(req, res));
+router.route("/").put((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.update));
 
 module.exports = router;
