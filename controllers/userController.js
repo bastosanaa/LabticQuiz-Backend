@@ -3,15 +3,24 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
 const AppError = require("../appError.js")
+const Errors = require("../constants/errorCodes.js")
+
 
 
 const userController = {
 
     create: async(req, res) => {
+
         const user_role = req.role
+        console.log(user_role)
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
+        }
         if (user_role !== "administrador") {
-            throw new AppError("Acesso negadoooo", 401)
-            // res.status(401).json({msg : "Acesso negado"})
+
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+            throw new AppError(statusCode, errorCode, message)
         }
         const user = {
             registration: req.body.registration,
@@ -26,28 +35,29 @@ const userController = {
     
     },
     getAllTeachers: async(req, res) => {
-        try {
-            const users = await UserModel.find({ role: 'professor'}, "name");
-            res.json(users);
-        } catch (error) {
-            console.log(error);
+
+        const users = await UserModel.find({ role: 'professor'}, "name");
+        
+        if (!users){
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode,errorCode,message)
         }
+        res.json(users);
+        
     },
     //utilizar token de autenticacao
     get: async(req, res) => {
-        try {
+
             const id = req.user
             const user = await UserModel.findById(id)
             
             if(!user) {
-                res.status(404).json({ msg: "Usuário não encontrado."})
-                return;
+                const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+                throw new AppError(statusCode, errorCode, message)
             }
             
             res.json(user)
-        } catch (error) {
-            console.log(error);
-        }
+
     },
     delete: async(req, res) => {
         try {
@@ -57,8 +67,8 @@ const userController = {
             const user = await UserModel.findById(id)
 
             if(!user) {
-                res.status(404).json({ msg: "Usuário não encontrado."})
-                return;
+                const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+                throw new AppError(statusCode, errorCode, message)
             }
 
             const deletedUser = await UserModel.findByIdAndDelete(id)
@@ -82,9 +92,11 @@ const userController = {
 
         const updatedUser = await UserModel.findByIdAndUpdate(id, user);
 
+        
+
         if(!updatedUser) {
-            res.status(404).json({ msg: "Usuário não encontrado."})
-            return;
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
         }
 
         res.status(200).json({user, msg: "Usuário atualizado com sucesso"})
@@ -92,35 +104,34 @@ const userController = {
 
     login: async (req, res) => {
         const {email, password} = req.body
-        try {
-            const userExists = await UserModel.findOne({email});
-            console.log(userExists);
-            if (!userExists) {
-                return res.status(404).json({msg: "Usuário não encontrado"});
-            }
-
-            const isPasswordValid = await bcrypt.compare(password, userExists.password);
-            if (!isPasswordValid) {
-                return res.status(401).json({ msg: "Senha inválida."})
-            }
-            //JWT
-            const payload = {user_id: userExists._id, user_role: userExists.role}
-            const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 30000 });
-            res.json({ msg: "Login bem-sucedido", auth:true, token})
-        } catch (error) {
-            res.status(500)
+        const userExists = await UserModel.findOne({email});
+        console.log(userExists);
+        if (!userExists) {
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
         }
+
+        const isPasswordValid = await bcrypt.compare(password, userExists.password);
+        if (!isPasswordValid) {
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.INCORRECT_CURRENT_PASSWORD
+            throw new AppError(statusCode, errorCode, message)
+        }
+        //JWT
+        const payload = {user_id: userExists._id, user_role: userExists.role}
+        const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 30000 });
+        res.json({ msg: "Login bem-sucedido", auth:true, token})
+
     },
 
     tokenToUserRole: async (req, res) => {
-        try {
-            const user_role = req.role
-            console.log("tokenToUserRole", user_role);
-            res.status(200).json({user_role : user_role})
-        } catch (error) {
-            res.status(500)
-        }
 
+        const user_role = req.role
+        if (!user_role) {
+            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+            throw new AppError(statusCode, errorCode, message)
+        }
+        console.log("tokenToUserRole", user_role);
+        res.status(200).json({user_role : user_role})
     }
 
 }

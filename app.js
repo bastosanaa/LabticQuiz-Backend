@@ -18,10 +18,7 @@ const routes = require("./routes/router")
 
 app.use('/api', routes);
 
-app.use((error, req, res, next) => {
-    console.log('Erro capturado no middleware global:', err.message);
-    next(error);
-});
+
 app.use(errorHandler)
 
 app.listen(3333, () => {

@@ -3,17 +3,17 @@ const tryCatch = require("../utils/tryCatch.js")
 
 const userController = require("../controllers/userController")
 
-router.route("/").post((req, res) => tryCatch(userController.create(req, res)));
+router.route("/").post((req, res, next) => tryCatch(req,res, next, userController.create));
 
-router.route("/teachers").get((req, res) => userController.getAllTeachers(req, res));
+router.route("/teachers").get((req, res,next) => tryCatch(req,res, next,userController.getAllTeachers));
 
-router.route("/").get((req, res) => userController.get(req, res));
+router.route("/").get((req, res, next) => tryCatch(req,res, next,userController.get));
 
-router.route("/").delete((req, res) => userController.delete(req, res));
+router.route("/").delete((req, res, next) => tryCatch(req,res, next,userController.delete));
 
-router.route("/").put((req, res) => userController.update(req, res));
+router.route("/").put((req, res, next) => tryCatch(req,res, next,userController.update));
 
-router.route("/role").post((req, res) => userController.tokenToUserRole(req, res))
+router.route("/role").post((req, res, next) => tryCatch(req,res, next,userController.tokenToUserRole))
 
 module.exports = router;
 
