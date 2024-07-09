@@ -1,6 +1,7 @@
 const { Subject: SubjectModel} = require("../models/Subject")
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
+const checkPermission = require("../utils/checkPermission.js")
 
 
 const subjectController = {
@@ -8,16 +9,8 @@ const subjectController = {
     create: async(req, res) => {
 
         const user_role = req.role
-        console.log("ROLE DO USUARIO", user_role);
 
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
-            throw new AppError(statusCode, errorCode, message)
-        }
+        checkPermission(user_role)
 
         const subjectName = req.body.name
         const subjectEqual = await SubjectModel.findOne({'name' : subjectName})
@@ -63,14 +56,8 @@ const subjectController = {
     delete: async(req, res) => {
 
         const user_role = req.role
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
-            throw new AppError(statusCode, errorCode, message)
-        }
+        checkPermission(user_role)
+
         const id = req.body.id
 
         const subject = await SubjectModel.findById(id)
@@ -88,14 +75,8 @@ const subjectController = {
     update: async (req, res) => {
 
         const user_role = req.role
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
-            throw new AppError(statusCode, errorCode, message)
-        }
+        checkPermission(user_role)
+
         const subject = {
             name: req.body.name,
             teacher_id: req.body.teacher_id

@@ -1,10 +1,14 @@
 const jwt = require('jsonwebtoken')
+const AppError = require("../appError.js")
+const Errors = require("../constants/errorCodes.js")
+
 
 
 function checkToken(req, res, next) {
     const token = req.header('Authorization');
     if (!token) {
-        return res.status(401).json({ msg: "Acesso negado."})
+        const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
+        throw new AppError(statusCode, errorCode, message)
     }
     try {
         const verified = jwt.verify(token, process.env.SECRET)

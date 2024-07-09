@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv').config();
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
+const checkPermission = require("../utils/checkPermission.js")
 
 
 
@@ -12,16 +13,7 @@ const userController = {
     create: async(req, res) => {
 
         const user_role = req.role
-        console.log(user_role)
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
-
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
-            throw new AppError(statusCode, errorCode, message)
-        }
+        checkPermission(user_role)
         const user = {
             registration: req.body.registration,
             name: req.body.name,
@@ -61,21 +53,27 @@ const userController = {
     },
     delete: async(req, res) => {
             
-            const id = req.user
+        const user_role = req.role
+        checkPermission(user_role)
 
-            const user = await UserModel.findById(id)
+        const id = req.user
 
-            if(!user) {
-                const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
-                throw new AppError(statusCode, errorCode, message)
-            }
+        const user = await UserModel.findById(id)
 
-            const deletedUser = await UserModel.findByIdAndDelete(id)
-            
-            res.status(200).json({ deletedUser, msg: "Usuário excluído com sucesso"})
+        if(!user) {
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const deletedUser = await UserModel.findByIdAndDelete(id)
+        
+        res.status(200).json({ deletedUser, msg: "Usuário excluído com sucesso"})
 
     },
     update: async (req, res) => {
+
+        const user_role = req.role
+        checkPermission(user_role) 
         const user = {
             registration: req.body.registration,
             name: req.body.name,
@@ -87,8 +85,6 @@ const userController = {
         const id = req.user
 
         const updatedUser = await UserModel.findByIdAndUpdate(id, user);
-
-        
 
         if(!updatedUser) {
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
@@ -114,7 +110,7 @@ const userController = {
         }
         //JWT
         const payload = {user_id: userExists._id, user_role: userExists.role}
-        const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 30000 });
+        const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 9000000 });
         res.json({ msg: "Login bem-sucedido", auth:true, token})
 
     },

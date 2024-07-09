@@ -1,4 +1,7 @@
 const { studentsSubjects: StudentsSubjectsModel } = require("../models/StudentsSubjects")
+const { User: UserModel } = require("../models/User");
+const { Subject: SubjectModel } = require("../models/Subject");
+const checkPermission = require("../utils/checkPermission.js");
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
 
@@ -7,20 +10,28 @@ const studentsSubjectsController = {
     create: async(req,res) => {
 
         const user_role = req.role
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
+        checkPermission(user_role)
 
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
+        //Check if user AND subject exists before creating relation
+        const user_id = req.body.user_id
+        const user = await UserModel.findById(user_id)
+        if (!user) {
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
-        //VERIFICAR SE A DISCIPLINA E O USUARIO EXISTEM
+
+        const subject_id = req.body.subject_id
+        const subject = await SubjectModel.findById(subject_id, "name")
+        if (!subject) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+
         const studentsSubjects = {
-            user_id: req.body.user_id,
-            subject_id: req.body.subject_id,
-            subject_name: req.body.subject_name
+            user_id: user_id,
+            subject_id: subject_id,
+            subject_name: subject.name
         };
 
         const response = await StudentsSubjectsModel.create(studentsSubjects);
@@ -55,14 +66,7 @@ const studentsSubjectsController = {
     },
     delete: async(req, res) => {
         const user_role = req.role
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
-            throw new AppError(statusCode, errorCode, message)
-        }
+        checkPermission(user_role)
 
         const id = req.body.id
         console.log(id)
@@ -80,14 +84,8 @@ const studentsSubjectsController = {
     update: async (req, res) => {
 
         const user_role = req.role
-        if (!user_role) {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
-            throw new AppError(statusCode, errorCode, message)
-        }
-        if (user_role !== "administrador") {
-            const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.FORBIDDEN_ACCESS
-            throw new AppError(statusCode, errorCode, message)
-        }
+        checkPermission(user_role)
+
         const studentsSubjects = {
             user_id: req.body.user_id,
             subject_id: req.body.subject_id,
