@@ -14,6 +14,7 @@ const userController = {
 
         const user_role = req.role
         checkPermission(user_role)
+
         const user = {
             registration: req.body.registration,
             name: req.body.name,
@@ -21,6 +22,12 @@ const userController = {
             password: await hashPassword(req.body.password),
             role: req.body.role
         };
+
+        const user_registered = await UserModel.find({name: user.name})
+        if (user_registered) {
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.ALREADY_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
 
         const response = await UserModel.create(user);
         res.status(201).json({response, msg: "Usuário registrado com sucesso!"});
@@ -30,7 +37,9 @@ const userController = {
 
         const users = await UserModel.find({ role: 'professor'}, "name");
         
+
         if (!users){
+            //erro nenhum professor cadastrado
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
             throw new AppError(statusCode,errorCode,message)
         }

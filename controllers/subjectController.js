@@ -11,23 +11,23 @@ const subjectController = {
         const user_role = req.role
 
         checkPermission(user_role)
-
-        const subjectName = req.body.name
-        const subjectEqual = await SubjectModel.findOne({'name' : subjectName})
-        if (subjectEqual) {
-            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.ALREADY_EXIST
-            throw new AppError(statusCode, errorCode, message)
-        }
-
+        
         const subject = {
             name: req.body.name,
             teacher_id : req.body.teacher_id,
             quizzes: []
         };
 
+        const subject_registared = await SubjectModel.findOne({'name' : subject.name})
+        if (subject_registared) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.ALREADY_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
         const response = await SubjectModel.create(subject);
         res.status(201).json({response, msg: "Disciplina criada com sucesso!"});
     },
+    
     getAll: async(req, res) => {
 
         const subjects = await SubjectModel.find().populate('teacher_id', "name");
