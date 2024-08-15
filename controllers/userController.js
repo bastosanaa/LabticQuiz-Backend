@@ -24,7 +24,6 @@ const userController = {
         };
 
         const user_registered = await UserModel.find({name: user.name})
-        console.log("USER " , user_registered);
         if (user_registered.length > 0) {
             console.log("USUARIO JA EXISTE");
             const {statusCode, errorCode, message} = Errors.USER_ERROR.ALREADY_EXIST
@@ -77,7 +76,7 @@ const userController = {
         const user_role = req.role
         checkPermission(user_role)
 
-        const id = req.user
+        const id = req.body.id
 
         const user = await UserModel.findById(id)
 
