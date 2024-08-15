@@ -8,7 +8,7 @@ const tryCatch = require("../utils/tryCatch.js")
 // Users Router
 const usersRouter = require("./users")
 
-router.use("/users", checkToken, usersRouter);
+router.use("/users",checkToken, usersRouter);
 
 // Subjects Router
 const subjectsRouter = require("./subjects")

@@ -24,7 +24,9 @@ const userController = {
         };
 
         const user_registered = await UserModel.find({name: user.name})
-        if (user_registered) {
+        console.log("USER " , user_registered);
+        if (user_registered.length > 0) {
+            console.log("USUARIO JA EXISTE");
             const {statusCode, errorCode, message} = Errors.USER_ERROR.ALREADY_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
@@ -39,12 +41,22 @@ const userController = {
         
 
         if (!users){
-            //erro nenhum professor cadastrado
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
             throw new AppError(statusCode,errorCode,message)
         }
         res.json(users);
         
+    },
+    getAllStudents: async(req, res) => {
+
+        const users = await UserModel.find({ role: 'aluno'}, "name");
+        
+
+        if (!users){
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode,errorCode,message)
+        }
+        res.json(users);
     },
     //utilizar token de autenticacao
     get: async(req, res) => {
