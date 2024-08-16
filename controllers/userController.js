@@ -13,8 +13,10 @@ const userController = {
     create: async(req, res) => {
 
         const user_role = req.role
+        
         checkPermission(user_role)
 
+        console.log("CORPO DA REQUISIACAO",req.body);
         const user = {
             registration: req.body.registration,
             name: req.body.name,
@@ -22,6 +24,7 @@ const userController = {
             password: await hashPassword(req.body.password),
             role: req.body.role
         };
+        console.log(user);
 
         const user_registered = await UserModel.find({name: user.name})
         if (user_registered.length > 0) {
