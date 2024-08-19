@@ -15,7 +15,7 @@ router.route("/:id").get((req, res, next) => tryCatch(req,res, next,userControll
 
 router.route("/").delete((req, res, next) => tryCatch(req,res, next,userController.delete));
 
-router.route("/").put((req, res, next) => tryCatch(req,res, next,userController.update));
+router.route("/:id").patch((req, res, next) => tryCatch(req,res, next,userController.update));
 
 router.route("/role").post((req, res, next) => tryCatch(req,res, next,userController.tokenToUserRole))
 

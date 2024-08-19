@@ -15,8 +15,6 @@ const userController = {
         const user_role = req.role
         
         checkPermission(user_role)
-
-        console.log("CORPO DA REQUISIACAO",req.body);
         const user = {
             registration: req.body.registration,
             name: req.body.name,
@@ -109,9 +107,12 @@ const userController = {
 
     },
     update: async (req, res) => {
-
-        const user_role = req.role
-        checkPermission(user_role) 
+        console.log("ENTROU NO UPDATE");
+        
+        const user_role = req.role        
+        checkPermission(user_role)
+        console.log("CORPO DA REQ",req.body);
+        
         const user = {
             registration: req.body.registration,
             name: req.body.name,
@@ -120,7 +121,7 @@ const userController = {
             role: req.body.role
         };
         
-        const id = req.user
+        const id = req.params.id
 
         const updatedUser = await UserModel.findByIdAndUpdate(id, user);
 
