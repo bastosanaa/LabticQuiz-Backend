@@ -51,7 +51,7 @@ const userController = {
     },
     getAllStudents: async(req, res) => {
 
-        const users = await UserModel.find({ role: 'aluno'}, "name");
+        const users = await UserModel.find({ role: 'estudante'}, "name registration");
         
 
         if (!users){
@@ -61,8 +61,10 @@ const userController = {
         res.json(users);
     },
     //utilizar token de autenticacao
-    get: async(req, res) => {
+    getByToken: async(req, res) => {
 
+            console.log(req.user);
+            
             const id = req.user
             const user = await UserModel.findById(id)
             
@@ -74,6 +76,19 @@ const userController = {
             res.json(user)
 
     },
+    get: async(req, res) => {
+        
+        const id = req.params.id
+        const user = await UserModel.findById(id)
+        
+        if(!user) {
+            const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+        
+        res.json(user)
+    },
+
     delete: async(req, res) => {
             
         const user_role = req.role

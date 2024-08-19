@@ -9,7 +9,8 @@ const studentsSubjectsController = {
 
     create: async(req,res) => {
 
-        const user_role = req.role
+        const user_role = 
+        
         checkPermission(user_role)
 
         //Check if user AND subject exists before creating relation
@@ -26,7 +27,6 @@ const studentsSubjectsController = {
             const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
-
 
         const studentsSubjects = {
             user_id: user_id,
