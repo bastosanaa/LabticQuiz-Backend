@@ -22,7 +22,6 @@ const userController = {
             password: await hashPassword(req.body.password),
             role: req.body.role
         };
-        console.log(user);
 
         const user_registered = await UserModel.find({name: user.name})
         if (user_registered.length > 0) {
@@ -32,7 +31,9 @@ const userController = {
         }
 
         const response = await UserModel.create(user);
-        res.status(201).json({response, msg: "Usuário registrado com sucesso!"});
+
+        
+        res.status(201).json({response, msg: "Usuário registrado com sucesso!", _id:response._id});
     
     },
     getAllTeachers: async(req, res) => {

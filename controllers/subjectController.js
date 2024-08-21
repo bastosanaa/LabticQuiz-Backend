@@ -73,6 +73,7 @@ const subjectController = {
 
     },
     update: async (req, res) => {
+        
 
         const user_role = req.role
         checkPermission(user_role)

@@ -9,12 +9,13 @@ const studentsSubjectsController = {
 
     create: async(req,res) => {
 
-        const user_role = 
+        const user_role = req.role
         
         checkPermission(user_role)
 
         //Check if user AND subject exists before creating relation
         const user_id = req.body.user_id
+        
         const user = await UserModel.findById(user_id)
         if (!user) {
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
@@ -22,6 +23,7 @@ const studentsSubjectsController = {
         }
 
         const subject_id = req.body.subject_id
+        
         const subject = await SubjectModel.findById(subject_id, "name")
         if (!subject) {
             const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
