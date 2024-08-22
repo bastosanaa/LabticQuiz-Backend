@@ -58,13 +58,19 @@ const studentsSubjectsController = {
     //     }
     // },
     getSubjectsByStudent: async (req, res) => {
-            const studentID = req.user
-            const subjects = await StudentsSubjectsModel.find({user_id: studentID})
+            const studentID = req.params.id
+            console.log(studentID);
+            
+            const subjects = await StudentsSubjectsModel.find({user_id: studentID}, "-user_id -_id")
             if(!subjects) {
                 const {statusCode, errorCode, message} = Errors.RELATION_ERROR.DOESNT_EXIST
                 throw new AppError(statusCode, errorCode, message)
             }
+
+            console.log(subjects);
+            
             res.json(subjects)
+
     },
     delete: async(req, res) => {
         const user_role = req.role

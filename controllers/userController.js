@@ -60,12 +60,12 @@ const userController = {
         res.json(users);
     },
     //utilizar token de autenticacao
-    getByToken: async(req, res) => {
+    getIDByToken: async(req, res) => {
 
             console.log(req.user);
             
             const id = req.user
-            const user = await UserModel.findById(id).select('nome email registration role')
+            const user = await UserModel.findById(id).select('_id')
             
             if(!user) {
                 const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
@@ -78,7 +78,7 @@ const userController = {
     get: async(req, res) => {
         
         const id = req.params.id
-        const user = await UserModel.findById(id).select('nome email registration role')
+        const user = await UserModel.findById(id).select('name email registration role')
         
         if(!user) {
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST

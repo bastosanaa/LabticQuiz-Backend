@@ -7,7 +7,7 @@ router.route("/").post((req, res, next) => tryCatch(req, res, next,studentsSubje
 
 // router.route("/studentsSubjects/:id").get((req, res) => studentsSubjectsController.getStudentsBySubject(req, res));
 
-router.route("/").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.getSubjectsByStudent));
+router.route("/:id").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.getSubjectsByStudent));
 
 router.route("/").delete((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.delete));
 
