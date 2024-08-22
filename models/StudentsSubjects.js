@@ -7,7 +7,8 @@ const studentsSubjectsSchema = new Schema ({
 
     user_id: {
         type: ObjectId,
-        required:true
+        required:true,
+        default: null
     }, 
     subject_id: {
         type: ObjectId,

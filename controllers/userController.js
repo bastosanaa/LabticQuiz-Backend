@@ -65,7 +65,7 @@ const userController = {
             console.log(req.user);
             
             const id = req.user
-            const user = await UserModel.findById(id)
+            const user = await UserModel.findById(id).select('nome email registration role')
             
             if(!user) {
                 const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
@@ -78,7 +78,7 @@ const userController = {
     get: async(req, res) => {
         
         const id = req.params.id
-        const user = await UserModel.findById(id)
+        const user = await UserModel.findById(id).select('nome email registration role')
         
         if(!user) {
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
