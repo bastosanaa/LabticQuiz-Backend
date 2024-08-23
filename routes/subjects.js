@@ -7,10 +7,26 @@ router.route("/register").post((req, res, next) => tryCatch(req, res, next,subje
 
 router.route("/painel").get((req, res, next) => tryCatch(req, res, next,subjectController.getAll));
 
-router.route("/:id").get((req, res, next) => tryCatch(req, res, next,subjectController.get));
-
 router.route("/").delete((req, res, next) => tryCatch(req, res, next,subjectController.delete));
 
+//routes related to teacher - subject association
+router.route("/teacher").get((req, res, next) => tryCatch(req, res, next,subjectController.getAllWithoutTeacher));
+
+// router.route("/teacher/:id").get((req, res, next) => tryCatch(req, res, next,subjectController.getByTeacher))
+
+router.route("/teacher").patch((req, res, next) => tryCatch(req, res, next,subjectController.updateTeacher));
+
+//
+
+router.route("/:id").get((req, res, next) => tryCatch(req, res, next,subjectController.get));
+
 router.route("/:id").patch((req, res, next) => tryCatch(req, res, next,subjectController.update));
+
+// router.route("/teacher").patch((req, res, next) => tryCatch(req, res, next,subjectController.updateTeacher))
+
+
+
+
+
 
 module.exports = router;

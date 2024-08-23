@@ -102,7 +102,10 @@ const userController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
-        const deletedUser = await UserModel.findByIdAndDelete(id)
+        const deletedUser = await UserModel.findByIdAndDelete(id).select('_id')
+
+        console.log(deletedUser);
+        
         
         res.status(200).json({ deletedUser, msg: "Usuário excluído com sucesso"})
 

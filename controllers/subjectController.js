@@ -39,6 +39,8 @@ const subjectController = {
 
     },
     get: async(req, res) => {
+        console.log("ENTROU NO ERRADO");
+        
 
         const id = req.params.id
         
@@ -51,8 +53,23 @@ const subjectController = {
         console.log(subject);
         res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
 
+    },
+    getAllWithoutTeacher: async(req, res) => {
+
+        console.log("ENTOU AQUIII");
+        
+        const subjects = await SubjectModel.find({'teacher_id': null});
+        console.log(subjects);
+        
+        if (!subjects) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+        res.json(subjects);
 
     },
+
+
     delete: async(req, res) => {
 
         const user_role = req.role
@@ -96,7 +113,34 @@ const subjectController = {
 
         res.status(200).json({subject, msg: "Usuário atualizado com sucesso"})
         
-    }
+    },
+
+    updateTeacher: async (req, res) => {
+        
+
+        const user_role = req.role
+        checkPermission(user_role)
+
+        const subject = {
+            name: req.body.name,
+            teacher_id: req.body.teacher_id
+        };
+        if (subject.teacher_id == '') {
+            subject.teacher_id = null
+        }
+        const id = req.params.id
+
+        const updatedSubject = await SubjectModel.findByIdAndUpdate(id, subject);
+
+        if(!updatedSubject) {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        res.status(200).json({subject, msg: "Usuário atualizado com sucesso"})
+        
+    },
+
 
 }
 module.exports = subjectController;
