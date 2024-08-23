@@ -72,14 +72,14 @@ const studentsSubjectsController = {
             res.json(subjects)
 
     },
-    delete: async(req, res) => {
+    deleteOne: async(req, res) => {
         const user_role = req.role
         checkPermission(user_role)
 
-        const id = req.body.id
-        console.log(id)
+        const user_id = req.body.user_id
+        const subject_id = req.body.subject_id     
 
-        const studentsSubjects = await StudentsSubjectsModel.deleteMany({subject_id: id})
+        const studentsSubjects = await StudentsSubjectsModel.findOneAndDelete({subject_id, user_id})
 
         if(!studentsSubjects) {
             const {statusCode, errorCode, message} = Errors.RELATION_ERROR.DOESNT_EXIST

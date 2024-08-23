@@ -9,7 +9,7 @@ router.route("/").post((req, res, next) => tryCatch(req, res, next,studentsSubje
 
 router.route("/:id").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.getSubjectsByStudent));
 
-router.route("/").delete((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.delete));
+router.route("/").delete((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.deleteOne));
 
 router.route("/").put((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.update));
 
