@@ -121,23 +121,23 @@ const subjectController = {
         const user_role = req.role
         checkPermission(user_role)
 
-        const subject = {
-            name: req.body.name,
-            teacher_id: req.body.teacher_id
-        };
-        if (subject.teacher_id == '') {
-            subject.teacher_id = null
-        }
-        const id = req.params.id
+        const teacher_id = req.body.teacher_id
+        const new_teacher_id = req.body.new_teacher_id
+        console.log(teacher_id);
+        
 
-        const updatedSubject = await SubjectModel.findByIdAndUpdate(id, subject);
+        const subjects = await SubjectModel.find({teacher_id:teacher_id});
 
-        if(!updatedSubject) {
+        if(!subjects) {
             const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
 
-        res.status(200).json({subject, msg: "Usuário atualizado com sucesso"})
+        const updatedSubjects = await SubjectModel.updateMany({ teacher_id:teacher_id, }, {
+            $set: { teacher_id: new_teacher_id }
+        })
+
+        res.status(200).json({updatedSubjects, msg: "Usuário atualizado com sucesso"})
         
     },
 

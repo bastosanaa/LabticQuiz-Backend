@@ -38,7 +38,7 @@ const userController = {
     },
     getAllTeachers: async(req, res) => {
 
-        const users = await UserModel.find({ role: 'professor'}, "name");
+        const users = await UserModel.find({ role: 'professor'}, "name registration");
         
 
         if (!users){
