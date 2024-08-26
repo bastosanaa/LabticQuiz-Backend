@@ -55,16 +55,29 @@ const subjectController = {
 
     },
     getAllWithoutTeacher: async(req, res) => {
-
-        console.log("ENTOU AQUIII");
         
         const subjects = await SubjectModel.find({'teacher_id': null});
         console.log(subjects);
         
-        if (!subjects) {
-            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
-            throw new AppError(statusCode, errorCode, message)
-        }
+        // if (subjects.length === 0 ) {
+        //     const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+        //     throw new AppError(statusCode, errorCode, message)
+        // }
+        res.json(subjects);
+
+    },
+
+    getByTeacher: async(req, res) => {
+        
+        const teacher_id = req.params.id
+
+        const subjects = await SubjectModel.find({'teacher_id': teacher_id});
+        console.log(subjects);
+        
+        // if (subjects.length === 0 ) {
+        //     const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+        //     throw new AppError(statusCode, errorCode, message)
+        // }
         res.json(subjects);
 
     },
@@ -115,14 +128,13 @@ const subjectController = {
         
     },
 
-    updateTeacher: async (req, res) => {
+    updateTeacherToNull: async (req, res) => {
         
 
         const user_role = req.role
         checkPermission(user_role)
 
         const teacher_id = req.body.teacher_id
-        const new_teacher_id = req.body.new_teacher_id
         console.log(teacher_id);
         
 

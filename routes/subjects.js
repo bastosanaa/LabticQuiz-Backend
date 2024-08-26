@@ -12,9 +12,9 @@ router.route("/").delete((req, res, next) => tryCatch(req, res, next,subjectCont
 //routes related to teacher - subject association
 router.route("/teacher").get((req, res, next) => tryCatch(req, res, next,subjectController.getAllWithoutTeacher));
 
-// router.route("/teacher/:id").get((req, res, next) => tryCatch(req, res, next,subjectController.getByTeacher))
+router.route("/teacher/:id").get((req, res, next) => tryCatch(req, res, next,subjectController.getByTeacher))
 
-router.route("/teacher").patch((req, res, next) => tryCatch(req, res, next,subjectController.updateTeacher));
+router.route("/teacher").patch((req, res, next) => tryCatch(req, res, next,subjectController.updateTeacherToNull));
 
 //
 
