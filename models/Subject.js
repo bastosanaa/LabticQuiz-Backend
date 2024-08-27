@@ -32,6 +32,16 @@ const subjectSchema = new Schema({
 {timestamps: true}
 );
 
+subjectSchema.pre('deleteOne',{ document: true, query: false }, async function(next) {
+    try {
+        
+        await mongoose.model('studentsSubjects').deleteMany({subject_id: this._id});
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
+
 const Subject = mongoose.model("subjects", subjectSchema);
 
 module.exports = {

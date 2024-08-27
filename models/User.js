@@ -28,6 +28,18 @@ const userSchema = new Schema({
 {timestamps: true}
 );
 
+userSchema.pre('deleteOne',{ document: true, query: false }, async function(next) {
+    try {
+        console.log("ENTROU NO PRE");
+        
+        await mongoose.model('studentsSubjects').deleteMany({user_id: this._id});
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
+
+
 const User = mongoose.model("users", userSchema);
 
 module.exports = {

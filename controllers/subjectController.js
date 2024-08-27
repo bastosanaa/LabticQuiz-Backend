@@ -97,9 +97,9 @@ const subjectController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
-        const deletedSubject = await SubjectModel.findByIdAndDelete(id)
+        await subject.deleteOne({_id: id})
         
-        res.status(200).json({ deletedSubject, msg: "Disciplina excluída com sucesso"})
+        res.status(200).json({subject,  msg: "Disciplina excluída com sucesso"})
 
     },
     update: async (req, res) => {
@@ -146,7 +146,7 @@ const subjectController = {
         }
 
         const updatedSubjects = await SubjectModel.updateMany({ teacher_id:teacher_id, }, {
-            $set: { teacher_id: new_teacher_id }
+            $set: { teacher_id: null }
         })
 
         res.status(200).json({updatedSubjects, msg: "Usuário atualizado com sucesso"})

@@ -6,12 +6,14 @@ const { Schema } = mongoose
 const studentsSubjectsSchema = new Schema ({
 
     user_id: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
         required:true,
         default: null
     }, 
     subject_id: {
-        type: ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subject',
         required:true
     },
     subject_name: {

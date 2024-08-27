@@ -5,6 +5,10 @@ const studentsSubjectsController = require("../controllers/studentsSubjectsContr
 
 router.route("/").post((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.create));
 
+router.route("/student/:id").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.deleteAllByStudent));
+
+router.route("/subject/:id").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.deleteAllBySubject));
+
 // router.route("/studentsSubjects/:id").get((req, res) => studentsSubjectsController.getStudentsBySubject(req, res));
 
 router.route("/:id").get((req, res, next) => tryCatch(req, res, next,studentsSubjectsController.getSubjectsByStudent));

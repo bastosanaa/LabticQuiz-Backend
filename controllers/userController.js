@@ -92,7 +92,7 @@ const userController = {
             
         const user_role = req.role
         checkPermission(user_role)
-
+        
         const id = req.body.id
 
         const user = await UserModel.findById(id)
@@ -102,12 +102,15 @@ const userController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
-        const deletedUser = await UserModel.findByIdAndDelete(id).select('_id')
-
-        console.log(deletedUser);
+        console.log("USER ROLE", user.role);
         
+        if (user.role === 'estudante') {
+            await user.deleteOne({_id: id})
+        } else {
+            await UserModel.findByIdAndDelete(id).select('_id')
+        }
         
-        res.status(200).json({ deletedUser, msg: "Usuário excluído com sucesso"})
+        res.status(200).json({ msg: "Usuário excluído com sucesso"})
 
     },
     update: async (req, res) => {

@@ -89,6 +89,7 @@ const studentsSubjectsController = {
         res.status(200).json({ studentsSubjects, msg: "Disciplina excluída com sucesso"})
 
     },
+
     update: async (req, res) => {
 
         const user_role = req.role
