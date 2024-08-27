@@ -1,4 +1,3 @@
-const { ObjectId } = require("mongodb")
 const mongoose = require("mongoose")
 
 const { Schema } = mongoose
@@ -7,9 +6,8 @@ const studentsSubjectsSchema = new Schema ({
 
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
+        ref: 'User',
         required:true,
-        default: null
     }, 
     subject_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -17,11 +15,11 @@ const studentsSubjectsSchema = new Schema ({
         required:true
     },
     subject_name: {
-        type:"string"
+        type:'string'
     }
 });
 
-const studentsSubjects = mongoose.model("studentsSubjects", studentsSubjectsSchema);
+const studentsSubjects = mongoose.model('studentsSubjects', studentsSubjectsSchema);
 
 module.exports = {
     studentsSubjects,
