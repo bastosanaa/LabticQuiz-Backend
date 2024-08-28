@@ -20,6 +20,11 @@ const studentsSubjectsRouter = require("./studentsSubjects")
 
 router.use("/studentsSubjects",checkToken, studentsSubjectsRouter)
 
+//quiz Router
+const quizRouter = require("./quizzes")
+
+router.use("/quizzes", checkToken, quizRouter)
+
 module.exports = router;
 
 //login

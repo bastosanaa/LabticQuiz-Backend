@@ -41,7 +41,7 @@ const quizSchema = new Schema({
     },
     show_answer: {
         type: Boolean,
-        required: true
+        default: true
     },
     questions: [{
         title: {
