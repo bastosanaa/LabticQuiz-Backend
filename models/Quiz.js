@@ -10,19 +10,18 @@ const quizSchema = new Schema({
     subject_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
-        required:true,
+        required: true
     },
     title: {
         type: String,
-        required:true
+        required: true
     },
     time: {
         type: Number,
-        required: 'true'
+        required: true
     },
     attempts: {
         type: Number,
-        required: 'true',
         default: 999
     },
     date_start: {
@@ -30,23 +29,28 @@ const quizSchema = new Schema({
         required: true
     },
     date_end: {
-        type: Number,
+        type: Date,
         required: true
     },
     instructions: {
         type:String,
+        required: true
     },
     type: {
         type:String,
+        required: true
     },
     show_answer: {
         type: Boolean,
         default: true
     },
+    is_draft: {
+        type: Boolean,
+        required: true
+    },
     questions: [{
         title: {
             type: String,
-            required:true
         },
         alternatives: [
             {   
@@ -69,3 +73,4 @@ module.exports = {
     Quiz,
     quizSchema
 }
+
