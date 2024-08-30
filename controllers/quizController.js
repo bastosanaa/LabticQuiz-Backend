@@ -1,4 +1,5 @@
 const { Quiz:QuizModel } = require('../models/Quiz.js')
+const { Subject: SubjectModel } = require('../models/Subject.js')
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
 const checkPermission = require("../utils/checkPermission.js");
@@ -33,6 +34,15 @@ const quizController = {
         }
 
         const response = await QuizModel.create(quiz)
+
+        const data = (response)
+
+        const subject = await SubjectModel.findById(subject_id)
+        subject.quizzes.push({
+            quiz_id: data._id,
+            description: data.title
+        })
+        subject.save()        
 
         return res.status(200).json(response)
 
@@ -70,7 +80,6 @@ const quizController = {
 
         return res.status(200).json(response)
     }
-
 }
 
 module.exports = quizController

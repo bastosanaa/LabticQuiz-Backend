@@ -17,7 +17,7 @@ const subjectSchema = new Schema({
     //quiz = nova entidade
     quizzes: [{
         quiz_id: {
-            type: ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Quiz",
             default: null
 
