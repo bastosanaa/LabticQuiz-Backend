@@ -7,6 +7,6 @@ router.route("/").post((req, res, next) => tryCatch(req,res,next, quizController
 
 router.route("/:id").put((req, res, next) => tryCatch(req,res,next, quizController.update))
 
-// router.route("/:id").get((req, res, next) => tryCatch((req,res,next, quizController.get)))
+router.route("/:id").get((req, res, next) => tryCatch(req,res,next, quizController.get))
 
 module.exports = router

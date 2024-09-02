@@ -62,6 +62,8 @@ const studentsSubjectsController = {
             console.log(studentID);
             
             const subjects = await StudentsSubjectsModel.find({user_id: studentID}, "-user_id -_id")
+            console.log(subjects);
+            
             if(!subjects) {
                 const {statusCode, errorCode, message} = Errors.RELATION_ERROR.DOESNT_EXIST
                 throw new AppError(statusCode, errorCode, message)

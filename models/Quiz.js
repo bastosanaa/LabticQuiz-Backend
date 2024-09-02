@@ -9,7 +9,7 @@ const questionSchema = new Schema ({
 const quizSchema = new Schema({
     subject_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subject',
+        ref: 'subjects',
         required: true
     },
     title: {

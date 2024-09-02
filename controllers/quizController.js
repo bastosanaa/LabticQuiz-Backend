@@ -79,6 +79,16 @@ const quizController = {
         const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)
 
         return res.status(200).json(response)
+    },
+
+    get: async (req, res) => {
+        const quiz_id = req.params.id
+
+        const quiz  = await QuizModel.findById(quiz_id).populate('subject_id', 'name')
+
+        //fazer tratamento de erro para quiz inexistent
+
+        res.json(quiz)
     }
 }
 
