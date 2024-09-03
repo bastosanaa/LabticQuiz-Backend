@@ -18,6 +18,10 @@ const answerSchema = new Schema ({
         ref: 'Quiz',
         required: true
     },
+    score: {
+        type: Number,
+        default: null
+    },
     question_answer: [{
         question_id: {
             type: mongoose.Schema.Types.ObjectId
