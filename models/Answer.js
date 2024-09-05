@@ -4,10 +4,7 @@ const { Schema } = mongoose
 
 const answerSchema = new Schema ({
 
-    title: {
-        type: String,
-        required: true
-    },
+
     quiz_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Quiz',

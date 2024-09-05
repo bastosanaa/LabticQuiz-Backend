@@ -28,7 +28,7 @@ router.use("/quizzes", checkToken, quizRouter)
 //answer Router 
 const answerRouter = require("./answers")
 
-router.use("/answer", checkToken, answerRouter)
+router.use("/answers", checkToken, answerRouter)
 
 module.exports = router;
 

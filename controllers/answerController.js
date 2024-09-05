@@ -4,13 +4,11 @@ const answerController = {
 
     create: async(req,res) => {
         
-        const title = req.body.title
         const quiz_id = req.body.quiz_id
-        const student_id = req.body.student_id
+        const student_id = req.user        
         const question_answer = req.body.question_answer
 
         const answer = {
-            title: title,
             quiz_id: quiz_id,
             student_id: student_id,
             question_answer: question_answer
