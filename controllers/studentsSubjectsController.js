@@ -59,6 +59,7 @@ const studentsSubjectsController = {
     // },
     getSubjectsByStudent: async (req, res) => {
             const studentID = req.params.id
+            
             console.log(studentID);
             
             const subjects = await StudentsSubjectsModel.find({user_id: studentID}, "-user_id -_id")

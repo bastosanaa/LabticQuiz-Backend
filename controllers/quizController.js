@@ -82,14 +82,26 @@ const quizController = {
     },
 
     get: async (req, res) => {
-        const quiz_id = req.params.id
+        const quiz_id = req.params.id        
 
         const quiz  = await QuizModel.findById(quiz_id).populate('subject_id', 'name')
 
         //fazer tratamento de erro para quiz inexistent
 
         res.json(quiz)
+    },
+
+    getAllBySubject: async(req, res) => {
+
+        const subject_id = req.params.id;
+        console.log(subject_id);
+        
+        
+        const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id')
+
+        res.json(quizzes)
     }
+
 }
 
 module.exports = quizController
