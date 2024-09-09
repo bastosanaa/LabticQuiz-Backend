@@ -38,9 +38,7 @@ const subjectController = {
         res.json(subjects);
 
     },
-    get: async(req, res) => {
-        console.log("ENTROU NO ERRADO");
-        
+    get: async(req, res) => {        
 
         const id = req.params.id
         

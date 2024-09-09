@@ -19,6 +19,7 @@ const quizController = {
         const type = req.body.type
         const is_draft = req.body.is_draft
         const questions = req.body.questions
+        
 
         const quiz = {
             subject_id: subject_id,
@@ -30,7 +31,8 @@ const quizController = {
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            questions: questions
+            questions: questions,
+            question_answer: null
         }
 
         const response = await QuizModel.create(quiz)
@@ -62,6 +64,7 @@ const quizController = {
         const type = req.body.type
         const is_draft = req.body.is_draft
         const questions = req.body.questions
+        
 
         const quiz = {
             subject_id: subject_id,
@@ -73,10 +76,11 @@ const quizController = {
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            questions: questions
+            questions: questions,
+            question_answer: null
         }
 
-        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)
+        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)        
 
         return res.status(200).json(response)
     },
@@ -93,9 +97,7 @@ const quizController = {
 
     getAllBySubject: async(req, res) => {
 
-        const subject_id = req.params.id;
-        console.log(subject_id);
-        
+        const subject_id = req.params.id;        
         
         const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id')
 

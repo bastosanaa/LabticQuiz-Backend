@@ -61,8 +61,6 @@ const userController = {
     },
     //utilizar token de autenticacao
     getIDByToken: async(req, res) => {
-
-            console.log(req.user);
             
             const id = req.user
             const user = await UserModel.findById(id).select('_id')
@@ -143,7 +141,6 @@ const userController = {
     login: async (req, res) => {
         const {email, password} = req.body
         const userExists = await UserModel.findOne({email});
-        console.log(userExists);
         if (!userExists) {
             const {statusCode, errorCode, message} = Errors.USER_ERROR.DOESNT_EXIST
             throw new AppError(statusCode, errorCode, message)
