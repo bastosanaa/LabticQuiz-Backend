@@ -17,14 +17,10 @@ const answerController = {
         console.log("quizzz", quiz);
 
         question_answer.forEach(quizQuestion => {
-            let question_id = quizQuestion.question_id
-            console.log("O ID DA RESPOSTA DO USER É ", quizQuestion.alternative);
-            
+            let question_id = quizQuestion.question_id            
 
             const questionFound = quiz.questions.find(question => String(question._id) === question_id)
-            const correctAlt = questionFound.alternatives.find(alt => alt.correct)
-            console.log("O ID DA ALT CORRETA ", correctAlt._id);
-            
+            const correctAlt = questionFound.alternatives.find(alt => alt.correct)            
             
             if (String(correctAlt._id) === quizQuestion.alternative) {
                 score++
@@ -52,6 +48,14 @@ const answerController = {
         const quiz_id = req.params.id
 
         const response = await AnswerModel.find({quiz_id: quiz_id, student_id:student_id})        
+
+        return res.status(200).json(response)
+    },
+
+    getQuizAnswers: async (req,res) => {
+        const quiz_id = req.params
+
+        const response = await AnswerModel.find({quiz_id})
 
         return res.status(200).json(response)
     }

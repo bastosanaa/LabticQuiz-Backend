@@ -99,10 +99,11 @@ const quizController = {
 
         const subject_id = req.params.id;        
         
-        const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id')
+        const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id is_draft' )
 
         res.json(quizzes)
-    }
+    },
+    
 
 }
 
