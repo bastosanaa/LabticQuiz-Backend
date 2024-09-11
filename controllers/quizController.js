@@ -1,5 +1,6 @@
 const { Quiz:QuizModel } = require('../models/Quiz.js')
 const { Subject: SubjectModel } = require('../models/Subject.js')
+const { Answer: AnswerModel } = require('../models/Answer.js')
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
 const checkPermission = require("../utils/checkPermission.js");
@@ -33,7 +34,6 @@ const quizController = {
             type: type,
             is_draft: is_draft,
             questions: questions,
-            question_answer: null
         }
 
         const response = await QuizModel.create(quiz)
@@ -77,8 +77,7 @@ const quizController = {
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            questions: questions,
-            question_answer: null
+            questions: shuffleAlternatives(questions),
         }
 
         const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)        
@@ -94,6 +93,9 @@ const quizController = {
         console.log("chegou aq no delete", quiz_id);
         
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
+
+        const answers = await AnswerModel.find({quiz_id})
+        answers.delete()
 
         return res.json(deletedQuiz)
     },
@@ -118,6 +120,24 @@ const quizController = {
     },
     
 
+}
+
+function shuffleAlternatives(questions) {
+    function shuffleArray(array) {
+        const shuffledArray = [...array];
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
+    }
+
+    return questions.map(question => {
+        return {
+            ...question,
+            alternatives: shuffleArray(question.alternatives)
+        };
+    });
 }
 
 module.exports = quizController
