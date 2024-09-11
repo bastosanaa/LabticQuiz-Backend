@@ -7,7 +7,7 @@ const answerSchema = new Schema ({
 
     quiz_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Quiz',
+        ref: 'quizzes',
         required: true
     },
     student_id: {

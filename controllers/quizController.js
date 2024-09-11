@@ -85,18 +85,15 @@ const quizController = {
         return res.status(200).json(response)
     },
 
-    delete: async (req,res) => {
-        console.log('aaa');
-        
+    delete: async (req,res) => {        
         const quiz_id = req.params.id
 
-        console.log("chegou aq no delete", quiz_id);
         
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
 
-        const answers = await AnswerModel.find({quiz_id})
-        answers.delete()
-
+        const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
+        console.log("resostas ", answers);
+        
         return res.json(deletedQuiz)
     },
 
