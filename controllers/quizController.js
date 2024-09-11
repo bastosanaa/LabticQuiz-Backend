@@ -3,6 +3,7 @@ const { Subject: SubjectModel } = require('../models/Subject.js')
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
 const checkPermission = require("../utils/checkPermission.js");
+const { response } = require('express');
 
 
 const quizController = {
@@ -83,6 +84,18 @@ const quizController = {
         const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)        
 
         return res.status(200).json(response)
+    },
+
+    delete: async (req,res) => {
+        console.log('aaa');
+        
+        const quiz_id = req.params.id
+
+        console.log("chegou aq no delete", quiz_id);
+        
+        const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
+
+        return res.json(deletedQuiz)
     },
 
     get: async (req, res) => {

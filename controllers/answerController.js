@@ -53,9 +53,11 @@ const answerController = {
     },
 
     getQuizAnswers: async (req,res) => {
-        const quiz_id = req.params
+        const quiz_id = req.params.id
+        console.log(quiz_id);
+        
 
-        const response = await AnswerModel.find({quiz_id})
+        const response = await AnswerModel.find({quiz_id}).populate('student_id', 'name')
 
         return res.status(200).json(response)
     }

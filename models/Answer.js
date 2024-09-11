@@ -12,7 +12,7 @@ const answerSchema = new Schema ({
     },
     student_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Quiz',
+        ref: 'users',
         required: true
     },
     score: {
