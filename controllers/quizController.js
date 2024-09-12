@@ -52,6 +52,8 @@ const quizController = {
     },
 
     update: async(req,res) => {
+        console.log("UPDATINGG");
+        
 
         const quiz_id = req.params.id
         
@@ -65,22 +67,24 @@ const quizController = {
         const type = req.body.type
         const is_draft = req.body.is_draft
         const questions = req.body.questions
+        console.log(questions);
         
-
         const quiz = {
             subject_id: subject_id,
             title: title,
             time: time,
-            attempts: attempts,
+            attempts: attempts ? attempts : 999,
             date_start:dateStart,
             date_end: dateEnd,
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            questions: shuffleAlternatives(questions),
+            //corrigir
+            questions: questions? shuffleAlternatives(questions): null,
         }
 
-        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)        
+        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)   
+        console.log(response);
 
         return res.status(200).json(response)
     },
@@ -107,15 +111,43 @@ const quizController = {
         res.json(quiz)
     },
 
+    getAnswerKey:async (req,res) => {
+
+        const quiz_id = req.params.id
+        
+        const quiz = await QuizModel.findById(quiz_id)
+        
+
+        const quiz_key = quiz.questions.map(question => {
+            console.log(question);
+            
+            const answer = question.alternatives.filter(alternative => alternative.correct === true)
+            return {
+                id: question._id,
+                answer_id: answer[0]._id
+            }
+        })
+
+        return res.status(200).json(quiz_key)
+    },
+
     getAllBySubject: async(req, res) => {
 
         const subject_id = req.params.id;        
-        
+
         const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id is_draft' )
 
         res.json(quizzes)
     },
     
+    getAllPostedBySubject: async(req, res) => {
+
+        const subject_id = req.params.id;        
+
+        const quizzes = await QuizModel.find({subject_id: subject_id, is_draft:false}, 'title date_end type _id' )
+
+        res.json(quizzes)
+    },
 
 }
 

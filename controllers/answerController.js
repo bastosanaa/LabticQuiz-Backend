@@ -20,7 +20,7 @@ const answerController = {
             let question_id = quizQuestion.question_id            
 
             const questionFound = quiz.questions.find(question => String(question._id) === question_id)
-            const correctAlt = questionFound.alternatives.find(alt => alt.correct)            
+            const correctAlt = questionFound.alternatives.find(alt => alt.correct)         
             
             if (String(correctAlt._id) === quizQuestion.alternative) {
                 score++
@@ -42,6 +42,15 @@ const answerController = {
         return res.status(200).json(response)
 
     },
+    get:async (req,res) => {
+
+        const attempt_id = req.params.id
+
+        const response = await AnswerModel.findById(attempt_id).populate('quiz_id', 'title subject_id')   
+
+        return res.status(200).json(response)
+    },
+
     getStudentAttempts: async (req,res) => {
 
         const student_id = req.user
@@ -57,7 +66,7 @@ const answerController = {
         console.log(quiz_id);
         
 
-        const response = await AnswerModel.find({quiz_id}).populate('student_id', 'name')
+        const response = await AnswerModel.find({quiz_id}).populate('student_id', 'name', 'quiz_id')
 
         return res.status(200).json(response)
     }

@@ -11,7 +11,12 @@ router.route("/:id").put((req, res, next) => tryCatch(req,res,next, quizControll
 
 router.route("/:id").get((req, res, next) => tryCatch(req,res,next, quizController.get));
 
+router.route("/subject/posted/:id").get((req, res, next) => tryCatch(req,res,next, quizController.getAllPostedBySubject));
+
 router.route("/subject/:id").get((req, res, next) => tryCatch(req,res,next, quizController.getAllBySubject));
+
+router.route("/answer/:id").get((req, res, next) => tryCatch(req,res,next, quizController.getAnswerKey));
+
 
 
 module.exports = router
