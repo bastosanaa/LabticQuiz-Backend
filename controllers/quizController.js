@@ -126,6 +126,7 @@ const quizController = {
                 id: question._id,
                 answer_id: answer[0]._id
             }
+
         })
 
         return res.status(200).json(quiz_key)

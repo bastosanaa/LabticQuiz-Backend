@@ -46,7 +46,7 @@ const answerController = {
 
         const attempt_id = req.params.id
 
-        const response = await AnswerModel.findById(attempt_id).populate('quiz_id', 'title subject_id')   
+        const response = await AnswerModel.findById(attempt_id).populate('quiz_id', 'title subject_id').populate('student_id', 'name')  
 
         return res.status(200).json(response)
     },
@@ -64,9 +64,8 @@ const answerController = {
     getQuizAnswers: async (req,res) => {
         const quiz_id = req.params.id
         console.log(quiz_id);
-        
 
-        const response = await AnswerModel.find({quiz_id}).populate('student_id', 'name', 'quiz_id')
+        const response = await AnswerModel.find({quiz_id: quiz_id}).populate('student_id', 'name quiz_id')
 
         return res.status(200).json(response)
     }
