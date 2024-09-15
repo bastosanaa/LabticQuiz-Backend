@@ -68,12 +68,14 @@ const quizController = {
         const is_draft = req.body.is_draft
         const questions = req.body.questions
         console.log(questions);
+        console.log("TENTATIVAS", attempts);
+        
         
         const quiz = {
             subject_id: subject_id,
             title: title,
             time: time,
-            attempts: attempts ? attempts : 999,
+            attempts: attempts,
             date_start:dateStart,
             date_end: dateEnd,
             instructions: instructions,
@@ -146,7 +148,7 @@ const quizController = {
         const subject_id = req.params.id;        
 
         const quizzes = await QuizModel.find({subject_id: subject_id, is_draft:false}, 'title date_end type _id' )
-
+        
         res.json(quizzes)
     },
 
