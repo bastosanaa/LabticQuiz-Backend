@@ -10,11 +10,7 @@ const answerController = {
         const question_answer = req.body.question_answer
         let score = 0
         
-        console.log("respostas do user", question_answer);
-        
-
         const quiz = await QuizModel.findById(quiz_id)
-        console.log("quizzz", quiz);
 
         question_answer.forEach(quizQuestion => {
             let question_id = quizQuestion.question_id            
@@ -63,8 +59,6 @@ const answerController = {
 
     getQuizAnswers: async (req,res) => {
         const quiz_id = req.params.id
-        console.log(quiz_id);
-
         const response = await AnswerModel.find({quiz_id: quiz_id}).populate('student_id', 'name quiz_id')
 
         return res.status(200).json(response)

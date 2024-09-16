@@ -50,19 +50,13 @@ const subjectController = {
             const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
-        console.log(subject);
         res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
 
     },
     getAllWithoutTeacher: async(req, res) => {
         
         const subjects = await SubjectModel.find({'teacher_id': null});
-        console.log(subjects);
         
-        // if (subjects.length === 0 ) {
-        //     const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
-        //     throw new AppError(statusCode, errorCode, message)
-        // }
         res.json(subjects);
 
     },
@@ -72,12 +66,7 @@ const subjectController = {
         const teacher_id = req.params.id
 
         const subjects = await SubjectModel.find({'teacher_id': teacher_id});
-        console.log(subjects);
-        
-        // if (subjects.length === 0 ) {
-        //     const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
-        //     throw new AppError(statusCode, errorCode, message)
-        // }
+
         res.json(subjects);
 
     },
@@ -98,11 +87,8 @@ const subjectController = {
         }
 
         const quizzes = subject.quizzes.map(quiz => (quiz.quiz_id))
-        console.log("QUIZZESSSSSS", quizzes);
-        
         for (const quiz of quizzes) {
-            console.log(quiz);
-            
+
             await AnswerModel.deleteMany({quiz_id: quiz})
         }
 
@@ -147,9 +133,7 @@ const subjectController = {
         const user_role = req.role
         checkPermission(user_role)
 
-        const teacher_id = req.body.teacher_id
-        console.log(teacher_id);
-        
+        const teacher_id = req.body.teacher_id        
 
         const subjects = await SubjectModel.find({teacher_id:teacher_id});
 

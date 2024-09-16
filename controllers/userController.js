@@ -25,7 +25,6 @@ const userController = {
 
         const user_registered = await UserModel.find({name: user.name})
         if (user_registered.length > 0) {
-            console.log("USUARIO JA EXISTE");
             const {statusCode, errorCode, message} = Errors.USER_ERROR.ALREADY_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
@@ -100,7 +99,6 @@ const userController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
-        console.log("USER ROLE", user.role);
         
         if (user.role === 'estudante') {
             await user.deleteOne({_id: id})
@@ -111,12 +109,9 @@ const userController = {
         res.status(200).json({ msg: "Usuário excluído com sucesso"})
 
     },
-    update: async (req, res) => {
-        console.log("ENTROU NO UPDATE");
-        
+    update: async (req, res) => {        
         const user_role = req.role        
         checkPermission(user_role)
-        console.log("CORPO DA REQ",req.body);
         
         const user = {
             registration: req.body.registration,
@@ -165,7 +160,6 @@ const userController = {
             const {statusCode, errorCode, message} = Errors.TOKEN_ERROR.NOT_PROVIDED
             throw new AppError(statusCode, errorCode, message)
         }
-        console.log("tokenToUserRole", user_role);
         res.status(200).json({user_role : user_role})
     }
 

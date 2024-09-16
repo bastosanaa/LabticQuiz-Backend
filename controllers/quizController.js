@@ -51,9 +51,7 @@ const quizController = {
 
     },
 
-    update: async(req,res) => {
-        console.log("UPDATINGG");
-        
+    update: async(req,res) => {        
 
         const quiz_id = req.params.id
         
@@ -67,8 +65,6 @@ const quizController = {
         const type = req.body.type
         const is_draft = req.body.is_draft
         const questions = req.body.questions
-        console.log(questions);
-        console.log("TENTATIVAS", attempts);
         
         
         const quiz = {
@@ -86,7 +82,6 @@ const quizController = {
         }
 
         const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)   
-        console.log(response);
 
         return res.status(200).json(response)
     },
@@ -99,7 +94,6 @@ const quizController = {
         const subject_id = deletedQuiz.subject_id._id
 
         const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
-        console.log("resostas ", answers);
 
         await SubjectModel.updateOne({
             _id: ObjectId(subject_id)
@@ -130,9 +124,7 @@ const quizController = {
         const quiz = await QuizModel.findById(quiz_id)
         
 
-        const quiz_key = quiz.questions.map(question => {
-            console.log(question);
-            
+        const quiz_key = quiz.questions.map(question => {            
             const answer = question.alternatives.filter(alternative => alternative.correct === true)
             return {
                 id: question._id,
