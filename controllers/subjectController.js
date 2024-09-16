@@ -1,4 +1,6 @@
 const { Subject: SubjectModel} = require("../models/Subject")
+const { Quiz: QuizModel, Quiz } = require("../models/Quiz.js")
+const { Answer: AnswerModel } = require("../models/Answer.js")
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
 const checkPermission = require("../utils/checkPermission.js")
@@ -95,7 +97,20 @@ const subjectController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
+        const quizzes = subject.quizzes.map(quiz => (quiz.quiz_id))
+        console.log("QUIZZESSSSSS", quizzes);
+        
+        for (const quiz of quizzes) {
+            console.log(quiz);
+            
+            await AnswerModel.deleteMany({quiz_id: quiz})
+        }
+
+        await QuizModel.deleteMany({subject_id: id})
+
         await subject.deleteOne({_id: id})
+
+
         
         res.status(200).json({subject,  msg: "Disciplina excluída com sucesso"})
 

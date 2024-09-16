@@ -96,9 +96,19 @@ const quizController = {
 
         
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
+        const subject_id = deletedQuiz.subject_id._id
 
         const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
         console.log("resostas ", answers);
+
+        await SubjectModel.updateOne({
+            _id: ObjectId(subject_id)
+        },
+        {
+            $pull: {
+                questions: {_id: quiz_id}
+            }
+        })
         
         return res.json(deletedQuiz)
     },
