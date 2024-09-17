@@ -16,10 +16,10 @@ Esta API consiste nas funcionalidades para o software Polvo, gerenciador de inst
 
 # Arquivos
 
-## constants
+## /constants
 definicao dos códigos e mensagens de erros personalizados que consistirão no tratamento de erros do software
 
-## models
+## /models
 consiste nas entidades presentes no sistema, que correspondem também as "tabelas" do banco de dados MongoDB:
 - Usuário (aluno, professor e adm)
 - Disciplina
@@ -27,10 +27,10 @@ consiste nas entidades presentes no sistema, que correspondem também as "tabela
 - Quiz
 - Respostas do Quiz
 
-## controllers 
+## /controllers 
 controladores para as respectivas entidades do sistema, nele são executadas as operações de CRUD e Login no caso dos usuários
 
-## routes 
+## /routes 
 os arquivos da pasta __routes__ fazem a ponte entre as requisições feitas do frontEnd até as funções requisitadas que são executadas nos controladores
 
 1. __router.js__ é o arquivo inicial que distribui as requisicoes para as demais rotas, específicas por entidade:
