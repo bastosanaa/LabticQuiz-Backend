@@ -1,10 +1,8 @@
 const { Quiz:QuizModel } = require('../models/Quiz.js')
 const { Subject: SubjectModel } = require('../models/Subject.js')
 const { Answer: AnswerModel } = require('../models/Answer.js')
-const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
-const checkPermission = require("../utils/checkPermission.js");
-const { response } = require('express');
+
 
 
 const quizController = {
@@ -77,7 +75,6 @@ const quizController = {
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            //corrigir
             questions: questions? shuffleAlternatives(questions): null,
         }
 

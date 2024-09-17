@@ -96,10 +96,24 @@ const RELATION_ERROR = {
     },
 };
 
+const QUIZ_ERROR = {
+    ALREADY_EXIST: {
+        statusCode: 409,
+        errorCode: 4409,
+        message: "Já existe um quiz com esse nome!"
+    },
+    DOESNT_EXIST: { 
+        statusCode: 404,
+        errorCode: 4404,
+        message: "Quiz não existe!"        
+    }
+}
+
 module.exports = {
     RELATION_ERROR,
     SUBJECT_ERROR,
     USER_ERROR,
-    TOKEN_ERROR
+    TOKEN_ERROR,
+    QUIZ_ERROR
 }
 
