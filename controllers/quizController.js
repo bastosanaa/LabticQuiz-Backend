@@ -19,7 +19,6 @@ const quizController = {
         const type = req.body.type
         const is_draft = req.body.is_draft
         const questions = req.body.questions
-        
 
         const quiz = {
             subject_id: subject_id,
@@ -41,7 +40,8 @@ const quizController = {
         const subject = await SubjectModel.findById(subject_id)
         subject.quizzes.push({
             quiz_id: data._id,
-            description: data.title
+            description: data.title,
+            is_draft: is_draft
         })
         subject.save()        
 
@@ -62,7 +62,13 @@ const quizController = {
         const instructions = req.body.instructions
         const type = req.body.type
         const is_draft = req.body.is_draft
-        const questions = req.body.questions
+        let questions = req.body.questions
+
+        console.log(questions);
+        
+        if (questions) {
+            questions = shuffleAlternatives(questions)
+        }
         
         
         const quiz = {
@@ -75,10 +81,22 @@ const quizController = {
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            questions: questions? shuffleAlternatives(questions): null,
+            questions: questions,
         }
 
-        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)   
+        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)
+
+        // WIP 🚧
+        await SubjectModel.updateOne({
+            "quizzes.quiz_id": quiz_id
+        },
+        {
+            $set: {
+                "quizzes.$.description": title,
+                "quizzes.$.is_draft": is_draft
+            }
+        },
+        { new: true })        
 
         return res.status(200).json(response)
     },
@@ -86,7 +104,6 @@ const quizController = {
     delete: async (req,res) => {        
         const quiz_id = req.params.id
 
-        
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
         const subject_id = deletedQuiz.subject_id._id
 

@@ -34,7 +34,6 @@ const quizSchema = new Schema({
     },
     instructions: {
         type:String,
-        required: true
     },
     type: {
         type:String,
