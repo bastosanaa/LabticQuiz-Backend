@@ -33,19 +33,25 @@ const quizController = {
             questions: questions,
         }
 
-        const response = await QuizModel.create(quiz)
-
-        const data = (response)
-
         const subject = await SubjectModel.findById(subject_id)
-        subject.quizzes.push({
-            quiz_id: data._id,
-            description: data.title,
-            is_draft: is_draft
-        })
-        subject.save()        
+        if (subject) {
+            const response = await QuizModel.create(quiz)
+            const data = (response)
+    
+            subject.quizzes.push({
+                quiz_id: data._id,
+                description: data.title,
+                is_draft: is_draft
+            })
+            subject.save()        
+            return res.status(200).json(response)
+        } else {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
 
-        return res.status(200).json(response)
+
+        }
+
 
     },
 
@@ -86,6 +92,11 @@ const quizController = {
 
         const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)
 
+        if (!response) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
         // WIP 🚧
         await SubjectModel.updateOne({
             "quizzes.quiz_id": quiz_id
@@ -105,6 +116,12 @@ const quizController = {
         const quiz_id = req.params.id
 
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
+
+        if (!deletedQuiz) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
         const subject_id = deletedQuiz.subject_id._id
 
         const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
@@ -126,8 +143,10 @@ const quizController = {
 
         const quiz  = await QuizModel.findById(quiz_id).populate('subject_id', 'name')
 
-        //fazer tratamento de erro para quiz inexistent
-
+        if (!quiz) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
         res.json(quiz)
     },
 
@@ -136,7 +155,11 @@ const quizController = {
         const quiz_id = req.params.id
         
         const quiz = await QuizModel.findById(quiz_id)
-        
+
+        if (!quiz) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
 
         const quiz_key = quiz.questions.map(question => {            
             const answer = question.alternatives.filter(alternative => alternative.correct === true)
@@ -153,7 +176,7 @@ const quizController = {
     getAllBySubject: async(req, res) => {
 
         const subject_id = req.params.id;        
-
+        
         const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id is_draft' )
 
         res.json(quizzes)
