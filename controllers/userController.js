@@ -148,7 +148,7 @@ const userController = {
         }
         //JWT
         const payload = {user_id: userExists._id, user_role: userExists.role}
-        const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 9000000 });
+        const token = jwt.sign( payload , process.env.SECRET, { expiresIn: 20000 });
         res.json({ msg: "Login bem-sucedido", auth:true, token})
 
     },
