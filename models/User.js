@@ -5,7 +5,7 @@ const { Schema } = mongoose
 const userSchema = new Schema({
 
     registration: {
-        type:Number,
+        type:String,
         required: true
     },
     name: {
