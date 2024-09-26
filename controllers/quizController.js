@@ -1,10 +1,8 @@
 const { Quiz:QuizModel } = require('../models/Quiz.js')
 const { Subject: SubjectModel } = require('../models/Subject.js')
 const { Answer: AnswerModel } = require('../models/Answer.js')
-const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
-const checkPermission = require("../utils/checkPermission.js");
-const { response } = require('express');
+
 
 
 const quizController = {
@@ -21,7 +19,6 @@ const quizController = {
         const type = req.body.type
         const is_draft = req.body.is_draft
         const questions = req.body.questions
-        
 
         const quiz = {
             subject_id: subject_id,
@@ -36,24 +33,29 @@ const quizController = {
             questions: questions,
         }
 
-        const response = await QuizModel.create(quiz)
-
-        const data = (response)
-
         const subject = await SubjectModel.findById(subject_id)
-        subject.quizzes.push({
-            quiz_id: data._id,
-            description: data.title
-        })
-        subject.save()        
+        if (subject) {
+            const response = await QuizModel.create(quiz)
+            const data = (response)
+    
+            subject.quizzes.push({
+                quiz_id: data._id,
+                description: data.title,
+                is_draft: is_draft
+            })
+            subject.save()        
+            return res.status(200).json(response)
+        } else {
+            const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
 
-        return res.status(200).json(response)
+
+        }
+
 
     },
 
-    update: async(req,res) => {
-        console.log("UPDATINGG");
-        
+    update: async(req,res) => {        
 
         const quiz_id = req.params.id
         
@@ -66,9 +68,13 @@ const quizController = {
         const instructions = req.body.instructions
         const type = req.body.type
         const is_draft = req.body.is_draft
-        const questions = req.body.questions
+        let questions = req.body.questions
+
         console.log(questions);
-        console.log("TENTATIVAS", attempts);
+        
+        if (questions) {
+            questions = shuffleAlternatives(questions)
+        }
         
         
         const quiz = {
@@ -81,12 +87,27 @@ const quizController = {
             instructions: instructions,
             type: type,
             is_draft: is_draft,
-            //corrigir
-            questions: questions? shuffleAlternatives(questions): null,
+            questions: questions,
         }
 
-        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)   
-        console.log(response);
+        const response = await QuizModel.findByIdAndUpdate(quiz_id, quiz)
+
+        if (!response) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        // WIP 🚧
+        await SubjectModel.updateOne({
+            "quizzes.quiz_id": quiz_id
+        },
+        {
+            $set: {
+                "quizzes.$.description": title,
+                "quizzes.$.is_draft": is_draft
+            }
+        },
+        { new: true })        
 
         return res.status(200).json(response)
     },
@@ -94,11 +115,25 @@ const quizController = {
     delete: async (req,res) => {        
         const quiz_id = req.params.id
 
-        
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
 
+        if (!deletedQuiz) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const subject_id = deletedQuiz.subject_id._id
+
         const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
-        console.log("resostas ", answers);
+
+        await SubjectModel.updateOne({
+            _id: ObjectId(subject_id)
+        },
+        {
+            $pull: {
+                questions: {_id: quiz_id}
+            }
+        })
         
         return res.json(deletedQuiz)
     },
@@ -108,8 +143,10 @@ const quizController = {
 
         const quiz  = await QuizModel.findById(quiz_id).populate('subject_id', 'name')
 
-        //fazer tratamento de erro para quiz inexistent
-
+        if (!quiz) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
         res.json(quiz)
     },
 
@@ -118,11 +155,13 @@ const quizController = {
         const quiz_id = req.params.id
         
         const quiz = await QuizModel.findById(quiz_id)
-        
 
-        const quiz_key = quiz.questions.map(question => {
-            console.log(question);
-            
+        if (!quiz) {
+            const {statusCode, errorCode, message} = Errors.QUIZ_ERROR.DOESNT_EXIST
+            throw new AppError(statusCode, errorCode, message)
+        }
+
+        const quiz_key = quiz.questions.map(question => {            
             const answer = question.alternatives.filter(alternative => alternative.correct === true)
             return {
                 id: question._id,
@@ -137,7 +176,7 @@ const quizController = {
     getAllBySubject: async(req, res) => {
 
         const subject_id = req.params.id;        
-
+        
         const quizzes = await QuizModel.find({subject_id: subject_id}, 'title date_end type _id is_draft' )
 
         res.json(quizzes)

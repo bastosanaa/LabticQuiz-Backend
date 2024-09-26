@@ -5,7 +5,7 @@ const { Schema } = mongoose
 const userSchema = new Schema({
 
     registration: {
-        type:Number,
+        type:String,
         required: true
     },
     name: {
@@ -29,9 +29,7 @@ const userSchema = new Schema({
 );
 
 userSchema.pre('deleteOne',{ document: true, query: false }, async function(next) {
-    try {
-        console.log("ENTROU NO PRE");
-        
+    try {        
         await mongoose.model('studentsSubjects').deleteMany({user_id: this._id});
         next()
     } catch (error) {

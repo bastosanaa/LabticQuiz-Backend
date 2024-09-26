@@ -25,6 +25,10 @@ const subjectSchema = new Schema({
         description: {
             type: String,
             default: null
+        },
+        is_draft: {
+            type: Boolean,
+            default: null
         }
 
     }],

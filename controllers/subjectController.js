@@ -1,4 +1,6 @@
 const { Subject: SubjectModel} = require("../models/Subject")
+const { Quiz: QuizModel, Quiz } = require("../models/Quiz.js")
+const { Answer: AnswerModel } = require("../models/Answer.js")
 const AppError = require("../appError.js")
 const Errors = require("../constants/errorCodes.js")
 const checkPermission = require("../utils/checkPermission.js")
@@ -48,19 +50,13 @@ const subjectController = {
             const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
             throw new AppError(statusCode, errorCode, message)
         }
-        console.log(subject);
         res.json({subject_name: subject.name, subject_teacher: subject.teacher_id})
 
     },
     getAllWithoutTeacher: async(req, res) => {
         
         const subjects = await SubjectModel.find({'teacher_id': null});
-        console.log(subjects);
         
-        // if (subjects.length === 0 ) {
-        //     const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
-        //     throw new AppError(statusCode, errorCode, message)
-        // }
         res.json(subjects);
 
     },
@@ -70,12 +66,7 @@ const subjectController = {
         const teacher_id = req.params.id
 
         const subjects = await SubjectModel.find({'teacher_id': teacher_id});
-        console.log(subjects);
-        
-        // if (subjects.length === 0 ) {
-        //     const {statusCode, errorCode, message} = Errors.SUBJECT_ERROR.DOESNT_EXIST
-        //     throw new AppError(statusCode, errorCode, message)
-        // }
+
         res.json(subjects);
 
     },
@@ -95,7 +86,17 @@ const subjectController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
+        const quizzes = subject.quizzes.map(quiz => (quiz.quiz_id))
+        for (const quiz of quizzes) {
+
+            await AnswerModel.deleteMany({quiz_id: quiz})
+        }
+
+        await QuizModel.deleteMany({subject_id: id})
+
         await subject.deleteOne({_id: id})
+
+
         
         res.status(200).json({subject,  msg: "Disciplina excluída com sucesso"})
 
@@ -132,9 +133,7 @@ const subjectController = {
         const user_role = req.role
         checkPermission(user_role)
 
-        const teacher_id = req.body.teacher_id
-        console.log(teacher_id);
-        
+        const teacher_id = req.body.teacher_id        
 
         const subjects = await SubjectModel.find({teacher_id:teacher_id});
 

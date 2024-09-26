@@ -1,7 +1,6 @@
 const router = require("express").Router()
 const checkToken = require("../middleware/checkToken.js")
 const userController = require("../controllers/userController.js")
-const errorHandler = require("../middleware/errorHandler.js")
 const tryCatch = require("../utils/tryCatch.js")
 
 
