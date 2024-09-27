@@ -75,8 +75,7 @@ const quizController = {
         if (questions) {
             questions = shuffleAlternatives(questions)
         }
-        
-        
+
         const quiz = {
             subject_id: subject_id,
             title: title,
@@ -114,6 +113,8 @@ const quizController = {
 
     delete: async (req,res) => {        
         const quiz_id = req.params.id
+        console.log('quiz_id', quiz_id);
+        
 
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
 
@@ -122,16 +123,22 @@ const quizController = {
             throw new AppError(statusCode, errorCode, message)
         }
 
-        const subject_id = deletedQuiz.subject_id._id
+        console.log('deleted',deletedQuiz.subject_id.toString());
+        
+        const subject_id = deletedQuiz.subject_id.toString()
+        const sub = await SubjectModel.findById(subject_id);
+        console.log("SUB" , sub);
+        
+        
 
         const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
 
         await SubjectModel.updateOne({
-            _id: ObjectId(subject_id)
+            _id: subject_id
         },
         {
             $pull: {
-                questions: {_id: quiz_id}
+                quizzes: {quiz_id: quiz_id}
             }
         })
         
