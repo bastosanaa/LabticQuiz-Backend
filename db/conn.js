@@ -8,7 +8,7 @@ async function main() {
         mongoose.set("strictQuery", true)
 
         // const uri = process.env.DB_CONN;
-        const uri = 'mongodb://127.0.0.1:27017/Quiz'
+        const uri = 'mongodb+srv://bastosanaa11:labticquiz@cluster0.mav3b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
         await mongoose.connect(uri)
 
         console.log("conectado ao banco");

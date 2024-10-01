@@ -112,9 +112,7 @@ const quizController = {
     },
 
     delete: async (req,res) => {        
-        const quiz_id = req.params.id
-        console.log('quiz_id', quiz_id);
-        
+        const quiz_id = req.params.id        
 
         const deletedQuiz = await QuizModel.findByIdAndDelete(quiz_id)
 
@@ -129,8 +127,6 @@ const quizController = {
         const sub = await SubjectModel.findById(subject_id);
         console.log("SUB" , sub);
         
-        
-
         const answers = await AnswerModel.deleteMany({quiz_id:quiz_id})
 
         await SubjectModel.updateOne({
