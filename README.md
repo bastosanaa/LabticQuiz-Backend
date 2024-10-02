@@ -1,3 +1,10 @@
+> ### Teste o Software!
+> - Você pode testar o software através da url = https://polvoapp.netlify.app
+> ##### Para entrar como administrador:
+> - email: adm@email.com
+> - password: 123
+> (por padrão todo usuário criado recebe a senha 123)
+
 # Polvo - Quiz Feature
 
 Esta API consiste nas funcionalidades para o software Polvo, gerenciador de instituição educacional, juntamente a nova feature de realizar quizzes na plataforma
