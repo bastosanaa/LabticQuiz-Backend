@@ -1,9 +1,11 @@
 > ### Teste o Software!
-> - Você pode testar o software através da url = https://polvoapp.netlify.app
-> ##### Para entrar como administrador:
-> - email: adm@email.com
-> - password: 123
-> (por padrão todo usuário criado recebe a senha 123)
+> - Deploy da aplicação: https://polvoapp.netlify.app
+> 
+> Professor Login: harry@gmail.com Password: 123
+>
+> Estudante Login: severus@gmail.com Password: 123
+
+
 
 # Polvo - Quiz Feature
 
